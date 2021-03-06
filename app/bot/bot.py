@@ -214,6 +214,7 @@ def processing_msg(command: str, data: dict, send_method=vk.messages.sendMessage
         )
     elif command == "mainmenu":
         send_method = reply
+        print(1)
         basic_data_msg = dict(
             peer_id=peer_id,
             message="Вы вернулись в главное меню",
