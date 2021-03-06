@@ -82,31 +82,36 @@ def get_raspisanie_on_tomorrow():
 token = cfg.get('vk', 'token')
 vk = vk_api.VkApi(token=token).get_api()
 
-keyboard = VkKeyboard(one_time=False)
-keyboard.add_callback_button("Расписание на сегодня", color=VkKeyboardColor.POSITIVE, payload='{"payload":"today"}')
-keyboard.add_line()
-keyboard.add_callback_button("Расписание на завтра", color=VkKeyboardColor.POSITIVE, payload='{"payload":"tomorrow"}')
-keyboard.add_line()
-keyboard.add_callback_button("Расписание пар", color=VkKeyboardColor.POSITIVE, payload='{"payload":"timetable"}')
-keyboard.add_line()
-# keyboard.add_callback_button("ФИО преподавателей", color=VkKeyboardColor.POSITIVE, payload='{"payload":"prepody"}')
-# keyboard.add_line()
-keyboard.add_openlink_button("Ссылка на диск", "https://yadi.sk/d/0W7wTf29wwaOYw")
+alternative_keyboard = VkKeyboard(inline=True)
+alternative_keyboard.add_callback_button("Расписание на сегодня", color=VkKeyboardColor.POSITIVE, payload='{"payload":"today"}')
+alternative_keyboard.add_callback_line()
+alternative_keyboard.add_callback_button("Расписание на завтра", color=VkKeyboardColor.POSITIVE, payload='{"payload":"tomorrow"}')
+alternative_keyboard.add_callback_line()
+alternative_keyboard.add_callback_button("Расписание пар", color=VkKeyboardColor.POSITIVE, payload='{"payload":"timetable"}')
+alternative_keyboard.add_callback_line()
+alternative_keyboard.add_callback_button("ФИО преподавателей", color=VkKeyboardColor.POSITIVE, payload='{"payload":"prepody"}')
+alternative_keyboard.add_callback_line()
+alternative_keyboard.add_callback_button("Выйти", payload={"payload": "mainmenu"})
+#alternative_keyboard.add_callback_openlink_button("Ссылка на диск", "https://yadi.sk/d/0W7wTf29wwaOYw")
 
-keyboard_my = VkKeyboard(one_time=False)
-keyboard_my.add_button("Расписание тест", color=VkKeyboardColor.POSITIVE, payload='{"payload":"today"}')
-keyboard_my.add_callback_button("Расписание на сегодня", color=VkKeyboardColor.POSITIVE, payload='{"payload":"today"}')
-keyboard_my.add_line()
-keyboard_my.add_callback_button("Расписание на завтра", color=VkKeyboardColor.POSITIVE,
-                                payload='{"payload":"tomorrow"}')
-keyboard_my.add_line()
-keyboard_my.add_callback_button("Расписание пар", color=VkKeyboardColor.POSITIVE, payload='{"payload":"timetable"}')
-keyboard_my.add_line()
-keyboard_my.add_callback_button("Defend", color=VkKeyboardColor.NEGATIVE, payload={"payload": "defend"})
-keyboard_my.add_line()
-# keyboard.add_callback_button("ФИО преподавателей", color=VkKeyboardColor.POSITIVE, payload='{"payload":"prepody"}')
-# keyboard.add_line()
-keyboard_my.add_openlink_button("Ссылка на диск", "https://yadi.sk/d/0W7wTf29wwaOYw")
+keyboard = VkKeyboard(one_time=False)
+keyboard.add_button("Альтернативное меню", color=VkKeyboardColor.SECONDARY, payload={"payload":"alternative_menu"})
+keyboard.add_callback_button("Расписание на сегодня", color=VkKeyboardColor.POSITIVE,
+                             payload='{"payload":"today"}')
+keyboard.add_line()
+keyboard.add_callback_button("Расписание на завтра", color=VkKeyboardColor.POSITIVE,
+                             payload='{"payload":"tomorrow"}')
+keyboard.add_line()
+keyboard.add_callback_button("Расписание пар", color=VkKeyboardColor.POSITIVE,
+                             payload='{"payload":"timetable"}')
+keyboard.add_line()
+keyboard.add_callback_button("Defend", color=VkKeyboardColor.NEGATIVE,
+                             payload={"payload": "defend"})
+keyboard.add_line()
+keyboard.add_callback_button("ФИО преподавателей", color=VkKeyboardColor.POSITIVE,
+                             payload='{"payload":"prepody"}')
+keyboard.add_line()
+keyboard.add_openlink_button("Ссылка на диск", "https://yadi.sk/d/0W7wTf29wwaOYw")
 
 subjects_keyboard = VkKeyboard(inline=True)
 subjects_keyboard.add_callback_button("Английский", payload={"payload": "english"})
@@ -235,6 +240,9 @@ def processing_msg(command: str, data: dict, send_method=vk.messages.sendMessage
             message="Вы вернулись в главное меню",
             keyboard=keyboard.get_keyboard()
         )
+    elif command == "alternative_menu":
+        send_method = reply
+        basic_data_msg = dict(peer_id=peer_id, keyboard=alternative_keyboard.get_keyboard())
     elif command == "defend":
         send_method = reply
         basic_data_msg = dict(peer_id=peer_id, attachment="photo379254977_457239134")
