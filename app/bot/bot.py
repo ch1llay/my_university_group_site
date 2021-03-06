@@ -18,7 +18,9 @@ from flask import Flask, request
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 
 from app.bot.data import *
-from app.db.all_tools_db import *
+# from app.db.all_tools_db import *
+from app.settings.config import *
+from app.bot.botdatabase.bot_model import *
 
 
 def write_json(data, file):
@@ -188,6 +190,19 @@ def processing_msg(command: str, data: dict, send_method=vk.messages.sendMessage
         command = payload or command.split()[0].lstrip('/')
         print(command)
 
+    subjects = {
+        "english": "Английский\n"
+                   "Данкова Наталья Станиславовна n.s.dankova@mail.ru\n"
+                   "Юрасова Ольга Николаевна ol.iurasova@yandex.ru",
+        "itvpd": "ИТвПД\nГолобокова Елена Михайловна",
+        "math": "Математика\nКупряшина Лилия Александровна",
+        "mlita": "МЛиТА\nКазакова Ирина Анатольевна",
+        "pravo": "Правоведение\nДанилова Валерия Александровна",
+        "proga": "Программирование\nГурьянов Лев Вячеславович",
+        "trir": "ТРИР\nТакташкин Денис Витальевич",
+        "phisic": "Физика\nКостина Наталья Владимировна\nСуровичкая Галина Владимировна",
+    }
+
     if command == "start":
         ans = "Привет. У меня ты можешь узнать расписание, фио преподовов и дз"
         send_method = reply
@@ -220,43 +235,12 @@ def processing_msg(command: str, data: dict, send_method=vk.messages.sendMessage
             message="Вы вернулись в главное меню",
             keyboard=keyboard.get_keyboard()
         )
-
-    # преподы предметов
-    # мне хочется плакать, когда я вижу этот код
-    elif command == "english":
-        basic_data_msg.update(smart_msg_creator(
-            "Английский\n"
-            "Данкова Наталья Станиславовна n.s.dankova@mail.ru\n"
-            "Юрасова Ольга Николаевна ol.iurasova@yandex.ru",
-            send_method
-        ))
-
     elif command == "defend":
         send_method = reply
         basic_data_msg = dict(peer_id=peer_id, attachment="photo379254977_457239134")
-    elif command == "itvpd":
-        basic_data_msg.update(smart_msg_creator("ИТвПД\nГолобокова Елена Михайловна", send_method))
 
-    elif command == "math":
-        basic_data_msg.update(smart_msg_creator("Математика\nКупряшина Лилия Александровна", send_method))
-
-    elif command == "mlita":
-        basic_data_msg.update(smart_msg_creator("МЛиТА\nКазакова Ирина Анатольевна", send_method))
-
-    elif command == "pravo":
-        basic_data_msg.update(smart_msg_creator("Правоведение\nДанилова Валерия Александровна", send_method))
-
-    elif command == "proga":
-        basic_data_msg.update(smart_msg_creator("Программирование\nГурьянов Лев Вячеславович", send_method))
-
-    elif command == "trir":
-        basic_data_msg.update(smart_msg_creator("ТРИР\nТакташкин Денис Витальевич", send_method))
-
-    elif command == "phisic":
-        basic_data_msg.update(smart_msg_creator(
-            "Физика\nКостина Наталья Владимировна\nСуровичкая Галина Владимировна",
-            send_method
-        ))
+    elif command in subjects:
+        basic_data_msg.update(smart_msg_creator(subjects[command], send_method))
     else:
         return
     send_method(**basic_data_msg)
