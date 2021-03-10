@@ -7,7 +7,25 @@ PRAKTIKA = "пр."
 
 def create_default_db():
     subjects = [{"name": "математика"},
-                {"name": "математика", "type_subject": "лк."}
+                {"name": "математика", "type_subject": "лк."},
+
+                {"name": "программирование"},
+                {"name": "программирование", "type_subject": "лк."},
+
+                {"name": "физика"},
+                {"name": "физика", "type_subject": "лк."},
+
+                {"name": "правоведение"},
+                {"name": "правоведение", "type_subject": "лк."},
+
+                {"name": "трир"},
+                {"name": "трир", "type_subject": "лк."},
+
+                {"name": "итвпд"},
+                {"name": "млита"},
+                {"name": "млита", "type_subject": "лк."},
+
+                # {"name": "физра", "type_subject": ""},
                 ]
     [Subject(**i) for i in subjects]
     commit()
@@ -55,5 +73,5 @@ def get_home_task_for_subject(subject, date_year_month_day_=None) -> list:
 
 
 with db_session:
-    add_home_task(Subject["математика", "пр."], "номер 5", (2021, 3, 12))
-    print(get_home_task_for_subject(Subject["математика", "пр."], (2021, 3, 12)))
+    # add_home_task(Subject["математика", "пр."], "номер 6", (2021, 3, 13))
+    print(get_home_task_for_subject(Subject["математика", "пр."], (2021, 3, 13)))
