@@ -6,10 +6,10 @@ PRAKTIKA = "пр."
 LEKCIA = "лк."
 
 
+# TODO:
 def create_default_db():
-    teachers =
     subjects = [{"name": "математика"},
-                {"name": "математика", "type_subject": "лк.", "teachers":Teacher["айдишник"]},
+                {"name": "математика", "type_subject": "лк."},
 
                 {"name": "программирование"},
                 {"name": "программирование", "type_subject": "лк."},
@@ -24,37 +24,118 @@ def create_default_db():
                 {"name": "трир", "type_subject": "лк."},
 
                 {"name": "итвпд"},
+
                 {"name": "млита"},
                 {"name": "млита", "type_subject": "лк."},
 
-                {"name": "физра", "type_subject": "пр. лк."},
+                {"name": "английский 1"},
+                {"name": "английский 2"},
+
+                {"name": "кураторский час", "type_subject": "-"},
+                {"name": "физ-ра", "type_subject": "-"},
                 ]
-    timetable = [
-        {"number_week": 1, "subject": Subject["физика", PRAKTIKA], "weekday": "понедельник"},
-        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "понедельник"},
-
-        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "вторник"},
-        {"number_week": 1, "subject": Subject["физ-ра", "пр. лк."], "weekday": "вторник"},
-        {"number_week": 1, "subject": Subject["итвпд", PRAKTIKA], "weekday": "вторник"},
-
-        {"number_week": 1, "subject": Subject["трир", LEKCIA], "weekday": "среда"},
-        {"number_week": 1, "subject": Subject["программирование", LEKCIA], "weekday": "среда"},
-        {"number_week": 1, "subject": Subject["программирование", PRAKTIKA], "weekday": "среда"},
-
-        {"number_week": 1, "subject": Subject["физика", LEKCIA], "weekday": "четверг"},
-        {"number_week": 1, "subject": Subject["математика", LEKCIA], "weekday": "четверг"},
-        {"number_week": 1, "subject": Subject["млита", PRAKTIKA], "weekday": "четверг"},
-
-        {"number_week": 1, "subject": Subject["трир", PRAKTIKA], "weekday": "пятница"},
-        {"number_week": 1, "subject": Subject["английский(", PRAKTIKA], "weekday": "пятница"},
-        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "пятница"},
-        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "пятница"},
-
-        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "суббота"},
-        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "суббота"}
-    ]
     [Subject(**i) for i in subjects]
     commit()
+    teachers = [
+        dict(name="Купряшина Лилия Александовна", subjects=Subject.select(lambda i: i.name == "математика")[:]),
+        dict(name="Костина Наталья Владимировна",
+             subjects=[Subject["физика", PRAKTIKA]]),
+        dict(name="Суровицкая Галина Владимировна",
+             subjects=[Subject["физика", LEKCIA]]),
+        dict(name="Гурьянов Лев Вячеславович", subjects=Subject.select(lambda i: i.name == "программирование")[:]),
+        dict(name="Такташкин Денис Витальевич", subjects=Subject.select(lambda i: i.name == "трир")[:]),
+        dict(name="Голобокова Елена Михайловна",
+             subjects=[Subject["итвпд", PRAKTIKA]]),
+        dict(name="Данкова Наталья Владамировна",
+             subjects=[Subject["английский 1", PRAKTIKA]]),
+        dict(name="Юрасова Ольга Владимировна",
+             subjects=[Subject["английский 2", PRAKTIKA]])
+    ]
+    [Teacher(**i) for i in teachers]
+    commit()
+    timetable = [
+        {"number_week": 1, "subject": Subject["физика", PRAKTIKA], "time": time(11, 40), "link": "8-507",
+         "weekday": 0},
+        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "time": time(13, 45), "link": "8-216",
+         "weekday": 0},
+
+        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "time": time(9, 50), "link": "7б-205",
+         "weekday": 1},
+        {"number_week": 1, "subject": Subject["физ-ра", "-"], "time": time(11, 40), "link": "",
+         "weekday": 1},
+        {"number_week": 1, "subject": Subject["итвпд", PRAKTIKA], "time": time(13, 45), "link": "7а-405а",
+         "weekday": 1},
+
+        {"number_week": 1, "subject": Subject["трир", LEKCIA], "time": time(9, 50), "link": "7а-425", "weekday": 2},
+        {"number_week": 1, "subject": Subject["программирование", LEKCIA], "time": time(11, 40), "link": "7а-418",
+         "weekday": 2},
+        {"number_week": 1, "subject": Subject["программирование", PRAKTIKA], "time": time(13, 45), "link": "7а-307",
+         "weekday": 2},
+
+        {"number_week": 1, "subject": Subject["физика", LEKCIA], "time": time(8, 0),
+         "link": r"https://us04web.zoom.us/j/3881678889?pwd=KzlRejJ0dnB6SCszOVVzSkhOUm9UUT09#success",
+         "weekday": 3},
+        {"number_week": 1, "subject": Subject["математика", LEKCIA], "time": time(9, 50),
+         "link": r"https://us04web.zoom.us/j/75974098629?pwd=MUxSMDZ4bnBaeElaQ1llMmJzekVTdz09#success",
+         "weekday": 3},
+        {"number_week": 1, "subject": Subject["млита", PRAKTIKA], "time": time(11, 40),
+         "link": r"https://us04web.zoom.us/j/74153390010?pwd=RXdZRUVRMWJUd29GczYwSDhJNC9YZz09",
+         "weekday": 3},
+
+        {"number_week": 1, "subject": Subject["трир", PRAKTIKA], "time": time(8, 8), "link": "7а-108",
+         "weekday": 4},
+        {"number_week": 1, "subject": Subject["английский 1", PRAKTIKA], "time": time(9, 50), "link": "8-807",
+         "weekday": 4},
+        {"number_week": 1, "subject": Subject["английский 2", PRAKTIKA], "time": time(9, 50), "link": "8-807б",
+         "weekday": 4},
+        {"number_week": 1, "subject": Subject["физ-ра", "-"], "time": time(11, 40), "link": "",
+         "weekday": 4},
+
+        {"number_week": 1, "subject": Subject["правоведение", LEKCIA], "time": time(8, 0),
+         "link": r"https://us04web.zoom.us/j/5981307260?pwd=VDBhWnFzUUtLVlBNWEUzS2Z3em5Ydz09",
+         "weekday": 5},
+        {"number_week": 1, "subject": Subject["млита", PRAKTIKA], "time": time(9, 50),
+         "link": "https://us04web.zoom.us/j/74153390010?pwd=RXdZRUVRMWJUd29GczYwSDhJNC9YZz09",
+         "weekday": 5},
+
+        {"number_week": 2, "subject": Subject["кураторский час", "-"], "time": time(9, 50), "link": "7а-307",
+         "weekday": 0},
+        {"number_week": 2, "subject": Subject["физика", PRAKTIKA], "time": time(11, 40), "link": "",
+         "weekday": 0},
+
+        {"number_week": 2, "subject": Subject["математика", PRAKTIKA], "time": time(9, 50), "link": "7б-205",
+         "weekday": 1},
+        {"number_week": 2, "subject": Subject["физ-ра", "-"], "time": time(11, 40), "link": "",
+         "weekday": 1},
+        {"number_week": 2, "subject": Subject["итвпд", PRAKTIKA], "time": time(13, 45), "link": "7а-405а",
+         "weekday": 1},
+
+        {"number_week": 2, "subject": Subject["программирование", LEKCIA], "time": time(11, 40), "link": "7а-418",
+         "weekday": 2},
+        {"number_week": 2, "subject": Subject["программирование", PRAKTIKA], "time": time(13, 45), "link": "7а-307",
+         "weekday": 2},
+        {"number_week": 2, "subject": Subject["правоведение", PRAKTIKA], "time": time(15, 35), "link": "7а-425",
+         "weekday": 2},
+
+        {"number_week": 2, "subject": Subject["физика", LEKCIA], "time": time(8, 0),
+         "link": r"https://us04web.zoom.us/j/3881678889?pwd=KzlRejJ0dnB6SCszOVVzSkhOUm9UUT09#success", "weekday": 3},
+        {"number_week": 2, "subject": Subject["математика", LEKCIA], "time": time(9, 50),
+         "link": r"https://us04web.zoom.us/j/75974098629?pwd=MUxSMDZ4bnBaeElaQ1llMmJzekVTdz09#success",
+         "weekday": 3},
+
+        {"number_week": 2, "subject": Subject["трир", PRAKTIKA], "time": time(8, 0), "link": "7а-108", "weekday": 4},
+        {"number_week": 2, "subject": Subject["английский 1", PRAKTIKA], "time": time(9, 50), "link": "8-807",
+         "weekday": 4},
+        {"number_week": 2, "subject": Subject["английский 2", PRAKTIKA], "time": time(9, 50), "link": "8-807б",
+         "weekday": 4},
+        {"number_week": 2, "subject": Subject["физ-ра", "-"], "time": time(11, 40), "link": "",
+         "weekday": 4}
+    ]
+    [Timetable(**i) for i in timetable]
+    commit()
+
+
+weekdays = ["понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье"]
 
 
 def add_subject(name, type_subject="пр."):
@@ -62,6 +143,7 @@ def add_subject(name, type_subject="пр."):
     commit()
 
 
+@Subject.only_func
 def add_home_task(subject, text, date_year_month_day_):
     Hometask(subject=subject, text=text, task_date=date(*date_year_month_day_))
     commit()
@@ -71,7 +153,8 @@ def get_default_db():
     return list(chain(Subject.select()[:]))
 
 
-def delete_home_task_from_date_for_subject(subject, date_year_month_day_):
+@Subject.only_func
+def delete_home_task_from_date(subject, date_year_month_day_):
     [i.delete() for i in subject.home_tasks.select() if lambda i: i.task_date == date(*date_year_month_day_)]
 
 
@@ -85,11 +168,12 @@ def get_home_task(date_year_month_day_=None) -> list:
     if not date_year_month_day_:
         task = list(map(lambda i: i.text, Hometask.select(lambda i: True)[:]))
     else:
-        task = list(map(lambda i: i.text, Hometask.select(lambda i: i.task_date == date(*date_year_month_day_))[:]))
+        task = [(i.text, i.task_date) for i in Hometask.select() if i.task_date == date(*date_year_month_day_)]
     return task
 
 
-def get_home_task_for_subject(subject, date_year_month_day_=None) -> list:
+@Subject.only_func
+def get_home_task(subject, date_year_month_day_=None) -> list:
     task = []
     if not date_year_month_day_:
         task = [i.text for i in subject.home_tasks.select()]
@@ -98,6 +182,23 @@ def get_home_task_for_subject(subject, date_year_month_day_=None) -> list:
     return task
 
 
+@Subject.only_func
+def get_teachers(subject):
+    return [i.name for i in Subject[subject, subject_type].teachers]
+
+
 def executable(function):
     with db_session:
-        function()
+        return function()
+
+
+# executable(create_default_db)
+with db_session:
+    # create_default_db()
+    # sbjt = "английский 2"
+    # subject_type = PRAKTIKA
+    # subject = Subject[sbjt, subject_type]
+    # subject.add_home_task("подготовить топик", (2021, 3, 11))
+    # # subject.delete_home_task_from_date((2021, 3, 11))
+    # print(subject.get_home_task((2021, 3, 11)))
+    print([i.subject for i in Timetable.select() if i.weekday == 0 and i.number_week == 1])

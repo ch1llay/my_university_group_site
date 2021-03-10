@@ -8,6 +8,8 @@ from datetime import datetime
 
 from pony.orm import *
 
+from app.db.db_base_func import AddArrtInDbClass
+
 db = Database()
 
 
@@ -17,6 +19,7 @@ class Timetable(db.Entity):
     number_week = Optional(int)
     weekday = Optional(int)
     time = Optional(time)
+    link = Optional(str)  # ссылка на конференцию или номер аудитории
 
 
 class Subject(db.Entity):
@@ -35,7 +38,7 @@ class Hometask(db.Entity):
     task_on_photo = Optional(Json)
     task_date = Optional(date)
     task_time = Optional(time)
-    messages_ids = Optional(Json)  # айдишники пересланных сообщений с дз например фото
+    messages_ids = Optional(Json)  # адишники пересланных сообщений с дз например фото
 
 
 class Teacher(db.Entity):
@@ -46,6 +49,11 @@ class Teacher(db.Entity):
     phone_number = Optional(str)
     vk_url = Optional(str)
 
+
+for name, ent in db.entities.items():
+    ent.__bases__ = (tuple(list(ent.__bases__) + [AddArrtInDbClass])
+                     if AddArrtInDbClass not in list(ent.__bases__)
+                     else tuple(list(ent.__bases__)))
 
 db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
 db.generate_mapping(create_tables=True)
