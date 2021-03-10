@@ -3,6 +3,7 @@ from itertools import chain
 from app.bot.botdatabase.bot_model import *
 
 PRAKTIKA = "пр."
+LEKCIA = "лк."
 
 
 def create_default_db():
@@ -25,8 +26,32 @@ def create_default_db():
                 {"name": "млита"},
                 {"name": "млита", "type_subject": "лк."},
 
-                # {"name": "физра", "type_subject": ""},
+                {"name": "физра", "type_subject": "пр. лк."},
                 ]
+    timetable = [
+        {"number_week": 1, "subject": Subject["физика", PRAKTIKA], "weekday": "понедельник"},
+        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "понедельник"},
+
+        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "вторник"},
+        {"number_week": 1, "subject": Subject["физ-ра", "пр. лк."], "weekday": "вторник"},
+        {"number_week": 1, "subject": Subject["итвпд", PRAKTIKA], "weekday": "вторник"},
+
+        {"number_week": 1, "subject": Subject["трир", LEKCIA], "weekday": "среда"},
+        {"number_week": 1, "subject": Subject["программирование", LEKCIA], "weekday": "среда"},
+        {"number_week": 1, "subject": Subject["программирование", PRAKTIKA], "weekday": "среда"},
+
+        {"number_week": 1, "subject": Subject["физика", PRAKTIKA], "weekday": "четверг"},
+        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "четверг"},
+        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "четверг"},
+
+        {"number_week": 1, "subject": Subject["физика", PRAKTIKA], "weekday": "пятница"},
+        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "пятница"},
+        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "пятница"},
+        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "пятница"},
+
+        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "суббота"},
+        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "суббота"}
+    ]
     [Subject(**i) for i in subjects]
     commit()
 
@@ -72,6 +97,6 @@ def get_home_task_for_subject(subject, date_year_month_day_=None) -> list:
     return task
 
 
-with db_session:
-    # add_home_task(Subject["математика", "пр."], "номер 6", (2021, 3, 13))
-    print(get_home_task_for_subject(Subject["математика", "пр."], (2021, 3, 13)))
+def executable(function):
+    with db_session:
+        function()

@@ -47,6 +47,5 @@ class Teacher(db.Entity):
     vk_url = Optional(str)
 
 
-
 db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
 db.generate_mapping(create_tables=True)
