@@ -7,8 +7,9 @@ LEKCIA = "лк."
 
 
 def create_default_db():
+    teachers =
     subjects = [{"name": "математика"},
-                {"name": "математика", "type_subject": "лк."},
+                {"name": "математика", "type_subject": "лк.", "teachers":Teacher["айдишник"]},
 
                 {"name": "программирование"},
                 {"name": "программирование", "type_subject": "лк."},
@@ -40,12 +41,12 @@ def create_default_db():
         {"number_week": 1, "subject": Subject["программирование", LEKCIA], "weekday": "среда"},
         {"number_week": 1, "subject": Subject["программирование", PRAKTIKA], "weekday": "среда"},
 
-        {"number_week": 1, "subject": Subject["физика", PRAKTIKA], "weekday": "четверг"},
-        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "четверг"},
-        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "четверг"},
+        {"number_week": 1, "subject": Subject["физика", LEKCIA], "weekday": "четверг"},
+        {"number_week": 1, "subject": Subject["математика", LEKCIA], "weekday": "четверг"},
+        {"number_week": 1, "subject": Subject["млита", PRAKTIKA], "weekday": "четверг"},
 
-        {"number_week": 1, "subject": Subject["физика", PRAKTIKA], "weekday": "пятница"},
-        {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "пятница"},
+        {"number_week": 1, "subject": Subject["трир", PRAKTIKA], "weekday": "пятница"},
+        {"number_week": 1, "subject": Subject["английский(", PRAKTIKA], "weekday": "пятница"},
         {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "пятница"},
         {"number_week": 1, "subject": Subject["математика", PRAKTIKA], "weekday": "пятница"},
 
