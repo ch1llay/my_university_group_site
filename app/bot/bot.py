@@ -102,6 +102,7 @@ class Bot:
         type_ = data["type"]
         if type_ == "message_new":
             message = data["object"]
+            print(message)
             from_id = message["from_id"]
             peer_id = message["peer_id"]
             payload = message.get("payload")
