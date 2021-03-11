@@ -88,11 +88,13 @@ class Bot:
         general.update(kwargs)
         vk.messages.send(**general)
 
-    # def reply_with_event(peer_id, event_id, user_id, text):
-    #     vk.messages.sendMessageEventAnswer(peer_id=peer_id, event_id=event_id, user_id=user_id,
-    #                                        event_data=json.dumps(
-    #                                            '{"type": "show_snackbar", "text": ' + text + ' }'))
-    # @staticmethod
+    @staticmethod
+    def reply_with_event(peer_id, event_id, user_id, text):
+        vk.messages.sendMessageEventAnswer(peer_id=peer_id, event_id=event_id, user_id=user_id,
+                                           event_data=json.dumps(
+                                               '{"type": "show_snackbar", "text": ' + text + ' }'))
+
+    @staticmethod
     # def delete_last_message(peer_id_):
     #     message_id = vk.messages.getHistory(count=1, peer_id=peer_id_)["items"][0]["id"]
     #     vk.messages.delete(message_ids=message_id, delete_for_all=True)
@@ -109,7 +111,10 @@ class Bot:
                 payload = message.get("payload")
             elif "message_event":
                 peer_id = data["object"]["peer_id"]
+                user_id = data["object"]["user_id"]
                 payload = data["object"]["payload"]
+                event_id = data["object"]["event_id"]
+                Bot.reply_with_event(peer_id=peer_id, event_id=event_id, text="Всплывающее")
             if payload:
                 payload = payload["payload"]
                 command = payload
@@ -118,18 +123,18 @@ class Bot:
                 command = text
             base_msg = dict(peer_id=peer_id, keyboard=Bot.keyboard)
             commands = [
-                {"start": dict(msg_text_fnctn=lambda: get_phrase("start"))},
-                {"today": dict(msg_text_fnctn=lambda: get_timetable_day(datetime.today().date()))},
-                {"tommorow": dict(
+                {("start"): dict(msg_text_fnctn=lambda: get_phrase("start"))},
+                {("today"): dict(msg_text_fnctn=lambda: get_timetable_day(datetime.today().date()))},
+                {("tommorow"): dict(
                     msg_text_fnctn=lambda: get_timetable_day((datetime.today() + dt.timedelta(days=1)).date()))},
-                {"week": dict(msg_text_fnctn=lambda: get_timetable_week())},
-                {"timetable": dict(msg_text_fnctn=lambda: get_phrase("timetable"))},
-                {"teachers": dict(msg_text_fnctn=lambda: "Выберете предмет", keyboard=Bot.subjects_keyboard)},
-                {"menu": dict(msg_text_fnctn=lambda: "Вы вернулись в главное меню", keyboard=Bot.menu)}
+                {("week"): dict(msg_text_fnctn=lambda: get_timetable_week())},
+                {("timetable"): dict(msg_text_fnctn=lambda: get_phrase("timetable"))},
+                {("teachers"): dict(msg_text_fnctn=lambda: "Выберете предмет", keyboard=Bot.subjects_keyboard)},
+                {("menu", "меню"): dict(msg_text_fnctn=lambda: "Вы вернулись в главное меню", keyboard=Bot.menu)}
             ]
             for cmnds in commands:
                 for c, d, in cmnds.items():
-                    if command == c:
+                    if command.lower() in c:
                         message = d["msg_text_fnctn"]()
                         d.pop("msg_text_fnctn")
                         base_msg.update({"message": message})
