@@ -152,3 +152,4 @@ def bot():
     if request.data:
         data = json.loads(request.data)
         Bot.msg_processing(data)
+    return "ok"
