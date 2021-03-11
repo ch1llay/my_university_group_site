@@ -84,7 +84,7 @@ class Bot:
 
     @staticmethod
     def reply(**kwargs):
-        general = dict(random_id=random.randint(0, 343439483948), keyboard=self.keyboard)
+        general = dict(random_id=random.randint(0, 343439483948), keyboard=Keyboards.get_keyboard())
         general.update(kwargs)
         vk.messages.send(**general)
 
