@@ -101,11 +101,15 @@ class Bot:
     def msg_processing(data):
         type_ = data["type"]
         if type_ in ("message_new", "message_event"):
-            message = data["object"]["message"]
-            # print(message)
-            from_id = message["from_id"]
-            peer_id = message["peer_id"]
-            payload = message.get("payload")
+            if type_ == "message_new":
+                message = data["object"]["message"]
+                # print(message)
+                from_id = message["from_id"]
+                peer_id = message["peer_id"]
+                payload = message.get("payload")
+            elif "message_event":
+                peer_id = data["object"]["peer_id"]
+                payload = data["object"]["payload"]
             if payload:
                 payload = payload["payload"]
                 command = payload
