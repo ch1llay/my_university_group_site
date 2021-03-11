@@ -100,36 +100,37 @@ class Bot:
     @staticmethod
     def msg_processing(data):
         type_ = data["type"]
-        message = data["object"]
-        from_id = message["from_id"]
-        peer_id = message["peer_id"]
-        payload = message.get("payload")
-        if payload:
-            payload = payload["payload"]
-            command = payload
-        else:
-            text = message["text"]
-            command = text
-        base_msg = dict(peer_id=peer_id, random_id=random.randbytes(64), keyboard=Bot.keyboard)
-        commands = [
-            {"start": dict(msg_text_fnctn=lambda: get_phrase("start"))},
-            {"today": dict(msg_text_fnctn=lambda: get_timetable_day(datetime.today().date()))},
-            {"tommorow": dict(
-                msg_text_fnctn=lambda: get_timetable_day((datetime.today() + dt.timedelta(days=1)).date()))},
-            {"week": dict(msg_text_fnctn=lambda: get_timetable_week())},
-            {"timetable": dict(msg_text_fnctn=lambda: get_phrase("timetable"))},
-            {"teachers": dict(msg_text_fnctn=lambda: "Выберете предмет", keyboard=Bot.subjects_keyboard)},
-            {"menu": dict(msg_text_fnctn=lambda: "Вы вернулись в главное меню", keyboard=Bot.menu)}
-        ]
-        for cmnds in commands:
-            for c, d, in cmnds.items():
-                if command == c:
-                    message = d["msg_text_fnctn"]()
-                    d.pop("msg_text_fnctn")
-                    base_msg.update({"message": message})
-                    base_msg.update(d)
+        if type_ == "message_new":
+            message = data["object"]
+            from_id = message["from_id"]
+            peer_id = message["peer_id"]
+            payload = message.get("payload")
+            if payload:
+                payload = payload["payload"]
+                command = payload
+            else:
+                text = message["text"]
+                command = text
+            base_msg = dict(peer_id=peer_id, random_id=random.randbytes(64), keyboard=Bot.keyboard)
+            commands = [
+                {"start": dict(msg_text_fnctn=lambda: get_phrase("start"))},
+                {"today": dict(msg_text_fnctn=lambda: get_timetable_day(datetime.today().date()))},
+                {"tommorow": dict(
+                    msg_text_fnctn=lambda: get_timetable_day((datetime.today() + dt.timedelta(days=1)).date()))},
+                {"week": dict(msg_text_fnctn=lambda: get_timetable_week())},
+                {"timetable": dict(msg_text_fnctn=lambda: get_phrase("timetable"))},
+                {"teachers": dict(msg_text_fnctn=lambda: "Выберете предмет", keyboard=Bot.subjects_keyboard)},
+                {"menu": dict(msg_text_fnctn=lambda: "Вы вернулись в главное меню", keyboard=Bot.menu)}
+            ]
+            for cmnds in commands:
+                for c, d, in cmnds.items():
+                    if command == c:
+                        message = d["msg_text_fnctn"]()
+                        d.pop("msg_text_fnctn")
+                        base_msg.update({"message": message})
+                        base_msg.update(d)
 
-        Bot.reply(base_msg)
+            Bot.reply(base_msg)
 
 
 app = Flask(__name__)
