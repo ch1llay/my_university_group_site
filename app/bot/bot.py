@@ -116,7 +116,7 @@ class Bot:
                 user_id = data["object"]["user_id"]
                 payload = data["object"]["payload"]
                 event_id = data["object"]["event_id"]
-                Bot.reply_with_event(peer_id=peer_id, event_id=event_id, text="Всплывающее")
+                Bot.reply_with_event(peer_id=peer_id, event_id=event_id, user_id=user_id, text="Всплывающее")
             if payload:
                 payload = payload["payload"]
                 command = payload
@@ -143,6 +143,7 @@ class Bot:
                         base_msg.update(d)
 
             Bot.reply(**base_msg)
+        return "ok"
 
 
 app = Flask(__name__)
