@@ -27,50 +27,50 @@ from app.settings.config import *
 
 
 class Keyboards:
-    keyboard = VkKeyboard(one_time=False)
-    keyboard.add_button("Меню", color=VkKeyboardColor.SECONDARY, payload={"payload": "menu"})
-    keyboard.add_line()
-    keyboard.add_openlink_button("Ссылка на диск", "https://yadi.sk/d/0W7wTf29wwaOYw")
-    # inline клавиатура для браузера
-    menu = VkKeyboard(inline=True)
-    menu.add_callback_button("Расписание на сегодня", color=VkKeyboardColor.POSITIVE,
-                             payload='{"payload":"today"}')
-    menu.add_line()
-    menu.add_callback_button("Расписание на завтра", color=VkKeyboardColor.POSITIVE,
-                             payload='{"payload":"tomorrow"}')
-    menu.add_line()
-    menu.add_callback_button("Расписание пар", color=VkKeyboardColor.POSITIVE,
-                             payload='{"payload":"timetable"}')
-    menu.add_line()
-    menu.add_callback_button("ФИО преподавателей", color=VkKeyboardColor.POSITIVE,
-                             payload='{"payload":"teachers"}')
-    menu.add_line()
-    menu.add_callback_button("Выйти", payload={"payload": "mainmenu"})
-    # клавиатура для получения информации о преподавателях
-    subjects_keyboard = VkKeyboard(inline=True)
-    subjects_keyboard.add_callback_button("Английский", payload={"payload": "english"})
-    subjects_keyboard.add_callback_button("ИТвПД", payload={"payload": "itvpd"})
-    subjects_keyboard.add_callback_button("Математика", payload={"payload": "math"})
-    subjects_keyboard.add_callback_button("МЛиТА", payload={"payload": "mlita"})
-    subjects_keyboard.add_line()
-    subjects_keyboard.add_callback_button("Правоведение", payload={"payload": "pravo"})
-    subjects_keyboard.add_callback_button("Программирование", payload={"payload": "proga"})
-    subjects_keyboard.add_callback_button("ТРИР", payload={"payload": "trir"})
-    subjects_keyboard.add_callback_button("Физика", payload={"payload": "phisic"})
-    subjects_keyboard.add_line()
-    subjects_keyboard.add_callback_button("Назад", payload={"payload": "menu"})
+    @staticmethod
+    def get_keyboard():
+        keyboard = VkKeyboard(one_time=False)
+        keyboard.add_button("Меню", color=VkKeyboardColor.SECONDARY, payload={"payload": "menu"})
+        keyboard.add_line()
+        keyboard.add_openlink_button("Ссылка на диск", "https://yadi.sk/d/0W7wTf29wwaOYw")
+        return keyboard.get_keyboard()
 
     @staticmethod
-    def get_keyboard(self):
-        return self.keyboard.get_keyboard()
+    def get_menu():
+        # inline клавиатура для браузера
+        menu = VkKeyboard(inline=True)
+        menu.add_callback_button("Расписание на сегодня", color=VkKeyboardColor.POSITIVE,
+                                 payload='{"payload":"today"}')
+        menu.add_line()
+        menu.add_callback_button("Расписание на завтра", color=VkKeyboardColor.POSITIVE,
+                                 payload='{"payload":"tomorrow"}')
+        menu.add_line()
+        menu.add_callback_button("Расписание пар", color=VkKeyboardColor.POSITIVE,
+                                 payload='{"payload":"timetable"}')
+        menu.add_line()
+        menu.add_callback_button("ФИО преподавателей", color=VkKeyboardColor.POSITIVE,
+                                 payload='{"payload":"teachers"}')
+        menu.add_line()
+        menu.add_callback_button("Выйти", payload={"payload": "mainmenu"})
+
+        return menu.get_keyboard()
 
     @staticmethod
-    def get_menu(self):
-        return self.menu.get_keyboard()
-
-    @staticmethod
-    def get_subjects_keyboard(self):
-        return self.subjects_keyboard.get_keyboard()
+    def get_subjects_keyboard():
+        # клавиатура для получения информации о преподавателях
+        subjects_keyboard = VkKeyboard(inline=True)
+        subjects_keyboard.add_callback_button("Английский", payload={"payload": "english"})
+        subjects_keyboard.add_callback_button("ИТвПД", payload={"payload": "itvpd"})
+        subjects_keyboard.add_callback_button("Математика", payload={"payload": "math"})
+        subjects_keyboard.add_callback_button("МЛиТА", payload={"payload": "mlita"})
+        subjects_keyboard.add_line()
+        subjects_keyboard.add_callback_button("Правоведение", payload={"payload": "pravo"})
+        subjects_keyboard.add_callback_button("Программирование", payload={"payload": "proga"})
+        subjects_keyboard.add_callback_button("ТРИР", payload={"payload": "trir"})
+        subjects_keyboard.add_callback_button("Физика", payload={"payload": "phisic"})
+        subjects_keyboard.add_line()
+        subjects_keyboard.add_callback_button("Назад", payload={"payload": "menu"})
+        return subjects_keyboard.get_keyboard()
 
 
 token = cfg.get('vk', 'token')
