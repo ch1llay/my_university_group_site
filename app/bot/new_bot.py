@@ -24,7 +24,6 @@ from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from app.bot.botdatabase.bd_commands import *
 # from app.db.all_tools_db import *
 from app.settings.config import *
-from app.bot.botdatabase.bot_model import *
 
 
 class Keyboards:
@@ -35,16 +34,16 @@ class Keyboards:
     # inline клавиатура для браузера
     menu = VkKeyboard(inline=True)
     menu.add_callback_button("Расписание на сегодня", color=VkKeyboardColor.POSITIVE,
-                                             payload='{"payload":"today"}')
+                             payload='{"payload":"today"}')
     menu.add_callback_line()
     menu.add_callback_button("Расписание на завтра", color=VkKeyboardColor.POSITIVE,
-                                             payload='{"payload":"tomorrow"}')
+                             payload='{"payload":"tomorrow"}')
     menu.add_callback_line()
     menu.add_callback_button("Расписание пар", color=VkKeyboardColor.POSITIVE,
-                                             payload='{"payload":"timetable"}')
+                             payload='{"payload":"timetable"}')
     menu.add_callback_line()
     menu.add_callback_button("ФИО преподавателей", color=VkKeyboardColor.POSITIVE,
-                                             payload='{"payload":"prepody"}')
+                             payload='{"payload":"teachers"}')
     menu.add_callback_line()
     menu.add_callback_button("Выйти", payload={"payload": "mainmenu"})
     # клавиатура для получения информации о преподавателях
@@ -59,7 +58,7 @@ class Keyboards:
     subjects_keyboard.add_callback_button("ТРИР", payload={"payload": "trir"})
     subjects_keyboard.add_callback_button("Физика", payload={"payload": "phisic"})
     subjects_keyboard.add_line()
-    subjects_keyboard.add_callback_button("Назад", payload={"payload": "mainmenu"})
+    subjects_keyboard.add_callback_button("Назад", payload={"payload": "menu"})
 
     def get_keyboard(self):
         return self.keyboard.get_keyboard()
@@ -70,22 +69,15 @@ class Keyboards:
     def get_subjects_keyboard(self):
         return self.subjects_keyboard.get_keyboard()
 
+
 token = cfg.get('vk', 'token')
 vk = vk_api.VkApi(token=token).get_api()
+
+
 class Bot:
     keyboard = Keyboards.get_keyboard()
     menu = Keyboards.get_menu()
     subjects_keyboard = Keyboards.get_keyboard()
-
-    def get_week_number(self):
-        today = datetime.today()
-        weekday = today.weekday()
-        wk = today.isocalendar()[1]
-        if weekday < 6:
-            number_week = 1 if wk % 2 else 2
-        else:
-            number_week = 2 if wk % 2 else 1
-        return number_week
 
     @staticmethod
     def reply(self, **kwargs):
@@ -93,19 +85,55 @@ class Bot:
         general.update(kwargs)
         vk.messages.send(**general)
 
-    def reply_with_event(peer_id, event_id, user_id, text):
-        vk.messages.sendMessageEventAnswer(peer_id=peer_id, event_id=event_id, user_id=user_id,
-                                                event_data=json.dumps(
-                                                    '{"type": "show_snackbar", "text": ' + text + ' }'))
+    # def reply_with_event(peer_id, event_id, user_id, text):
+    #     vk.messages.sendMessageEventAnswer(peer_id=peer_id, event_id=event_id, user_id=user_id,
+    #                                        event_data=json.dumps(
+    #                                            '{"type": "show_snackbar", "text": ' + text + ' }'))
 
     def delete_last_message(self, peer_id_):
         message_id = vk.messages.getHistory(count=1, peer_id=peer_id_)["items"][0]["id"]
         vk.messages.delete(message_ids=message_id, delete_for_all=True)
+
     @staticmethod
     def msg_processing(data):
         type_ = data["type"]
         message = data["object"]
+        from_id = message["from_id"]
+        peer_id = message["peer_id"]
+        payload = message.get("payload")
+        if payload:
+            payload = payload["payload"]
+            command = payload
+        else:
+            text = message["text"]
+            command = text
+        base_msg = dict(random_id=random.randbytes(64), keyboard=Bot.keyboard)
+        commands = [
+            {"start": dict(msg_text_fnctn=lambda: get_phrase("start"))},
+            {"today": dict(msg_text_fnctn=lambda: get_timetable_day(datetime.today().date()))},
+            {"tommorow": dict(
+                msg_text_fnctn=lambda: get_timetable_day((datetime.today() + dt.timedelta(days=1)).date()))},
+            {"week": dict(msg_text_fnctn=lambda: get_timetable_week())},
+            {"timetable": dict(msg_text_fnctn=lambda: get_phrase("timetable"))},
+            {"teachers": dict(msg_text_fnctn=lambda: "Выберете предмет", keyboard=Bot.subjects_keyboard)},
+            {"menu": dict(msg_text_fnctn=lambda: "Вы вернулись в главное меню", keyboard=Bot.menu)}
+        ]
+        for cmnds in commands:
+            for c, d, in cmnds.items():
+                if command == c:
+                    message = d["msg_text_fnctn"]()
+                    d.pop("msg_text_fnctn")
+                    base_msg.update({"message": message})
+                    base_msg.update(d)
 
+        Bot.reply(base_msg)
 
 
 app = Flask(__name__)
+
+
+@app.route('/', methods=["GET", "POST"])
+def bot():
+    if request.data:
+        data = json.loads(request.data)
+        Bot.msg_processing(data)

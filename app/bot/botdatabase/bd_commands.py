@@ -6,7 +6,6 @@ PRAKTIKA = "пр."
 LEKCIA = "лк."
 
 
-# TODO:
 def create_default_db():
     subjects = [{"name": "математика"},
                 {"name": "математика", "type_subject": "лк."},
@@ -146,81 +145,86 @@ def create_default_db():
 
     admins = [
         dict(name="write_homework",
-             ids="159526068,334465281,285983191,100774328,259258321,222458536,307097759,430256596,239105355,166287013,211900416,368974771,209567456"}
-    )
+             ids="159526068,334465281,285983191,100774328,259258321,222458536,307097759,430256596,239105355,166287013,211900416,368974771,209567456")
+    ]
 
+weekdays = ["понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье"]
 
-    weekdays = ["понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье"]
+def add_subject(name, type_subject="пр."):
+    Subject(name=name, type_subject=type_subject)
+    commit()
 
-    def add_subject(name, type_subject="пр."):
-        Subject(name=name, type_subject=type_subject)
-        commit()
+@Subject.only_func
+def add_home_task(subject, text, date_year_month_day_):
+    Hometask(subject=subject, text=text, task_date=date(*date_year_month_day_))
+    commit()
 
-    @Subject.only_func
-    def add_home_task(subject, text, date_year_month_day_):
-        Hometask(subject=subject, text=text, task_date=date(*date_year_month_day_))
-        commit()
+def get_default_db():
+    return list(chain(Subject.select()[:]))
 
-    def get_default_db():
-        return list(chain(Subject.select()[:]))
+@Subject.only_func
+def delete_home_task_from_date(subject, date_year_month_day_):
+    [i.delete() for i in subject.home_tasks.select() if lambda i: i.task_date == date(*date_year_month_day_)]
 
-    @Subject.only_func
-    def delete_home_task_from_date(subject, date_year_month_day_):
-        [i.delete() for i in subject.home_tasks.select() if lambda i: i.task_date == date(*date_year_month_day_)]
+def delete_home_task_date(date_year_month_day_):
+    map(lambda i: i.delete(),
+        Hometask.select(lambda i: i.task_date == date(*date_year_month_day_))[:])  # получить всю домашку
 
-    def delete_home_task_date(date_year_month_day_):
-        map(lambda i: i.delete(),
-            Hometask.select(lambda i: i.task_date == date(*date_year_month_day_))[:])  # получить всю домашку
+def get_home_task(date_year_month_day_=None) -> list:
+    task = []
+    if not date_year_month_day_:
+        task = list(map(lambda i: i.text, Hometask.select(lambda i: True)[:]))
+    else:
+        task = [(i.text, i.task_date) for i in Hometask.select() if i.task_date == date(*date_year_month_day_)]
+    return task
 
-    def get_home_task(date_year_month_day_=None) -> list:
-        task = []
-        if not date_year_month_day_:
-            task = list(map(lambda i: i.text, Hometask.select(lambda i: True)[:]))
-        else:
-            task = [(i.text, i.task_date) for i in Hometask.select() if i.task_date == date(*date_year_month_day_)]
-        return task
+@Subject.only_func
+def get_home_task(subject, date_year_month_day_=None) -> list:
+    task = []
+    if not date_year_month_day_:
+        task = [i.text for i in subject.home_tasks.select()]
+    else:
+        task = [i.text for i in subject.home_tasks.select() if i.task_date == date(*date_year_month_day_)]
+    return task
 
-    @Subject.only_func
-    def get_home_task(subject, date_year_month_day_=None) -> list:
-        task = []
-        if not date_year_month_day_:
-            task = [i.text for i in subject.home_tasks.select()]
-        else:
-            task = [i.text for i in subject.home_tasks.select() if i.task_date == date(*date_year_month_day_)]
-        return task
+@Subject.only_func
+def get_teachers(subject):
+    return [i.name for i in Subject[subject, subject_type].teachers]
 
-    @Subject.only_func
-    def get_teachers(subject):
-        return [i.name for i in Subject[subject, subject_type].teachers]
+# number_week = 1 if day.isocalendar()[1] % 2 else 2
+def get_timetable_day(day, number_week):
+    weekday = day.weekday() if day.weekday() < 6 else 0
+    timetable = [(i.time, i.subject, i.link) for i in Timetable.select() if
+                 i.number_week == number_week and i.weekday == weekday]
+    timetable_s = f"{weekdays[weekday]}\n"
+    for t, s, l in timetable:
+        timetable_s += f"{t.hour}:{'00' if str(t.minute) == '0' else t.minute} {s.name} {s.type_subject} {l}\n"
+    return timetable_s
 
-    # number_week = 1 if day.isocalendar()[1] % 2 else 2
-    def get_timetable_day(d, number_week):
-        day = date(*d)
-        weekday = day.weekday() if day.weekday() < 6 else 0
-        timetable = [(i.time, i.subject, i.link) for i in Timetable.select() if
-                     i.number_week == number_week and i.weekday == weekday]
-        timetable_s = f"{weekdays[weekday]}\n"
-        for t, s, l in timetable:
-            timetable_s += f"{t.hour}:{'00' if str(t.minute) == '0' else t.minute} {s.name} {s.type_subject} {l}\n"
-        return timetable_s
+def get_timetable_week():
+    today = datetime.today()
+    weekday = today.weekday()
+    wk = today.isocalendar()[1]
+    if weekday < 6:
+        number_week = 1 if wk % 2 else 2
+    else:
+        number_week = 2 if wk % 2 else 1
+    timetable = [(i.weekday, i.time, i.subject, i.link) for i in Timetable.select() if
+                 i.number_week == number_week]
+    timetable_s = f"неделя {number_week}\n"
+    for wd, t, s, l in timetable:
+        timetable_s += f"{weekdays[wd]}\n{t.hour}:{'00' if str(t.minute) == '0' else t.minute} {s.name} {s.type_subject} {l}\n"
+    return timetable_s
 
-    def get_timetable_week(number_week):
-        timetable = [(i.weekday, i.time, i.subject, i.link) for i in Timetable.select() if
-                     i.number_week == number_week]
-        timetable_s = f"неделя {number_week}\n"
-        for wd, t, s, l in timetable:
-            timetable_s += f"{weekdays[wd]}\n{t.hour}:{'00' if str(t.minute) == '0' else t.minute} {s.name} {s.type_subject} {l}\n"
-        return timetable_s
+def get_phrase(name):
+    return Phrase[name].text
 
-    def get_phrase(name):
-        return Phrase[name].text
-
-    def executable(function):
-        with db_session:
-            return function()
+def executable(function):
+    with db_session:
+        return function()
 
     # executable(create_default_db)
-    with db_session:
+    # with db_session:
     # # create_default_db()
     #     # sbjt = "английский 2"
     #     # subject_type = PRAKTIKA

@@ -1,4 +1,4 @@
-from app.bot.botdatabase.database import *
+from app.bot.botdatabase.bd_commands import *
 
 # import vk_api
 # TODO: добавить в базу данных пользователей(peer_ids) отправлять всем
