@@ -186,16 +186,31 @@ def get_home_task(subject, date_year_month_day_=None) -> list:
 def get_teachers(subject):
     return [i.name for i in Subject[subject, subject_type].teachers]
 
+
 # number_week = 1 if day.isocalendar()[1] % 2 else 2
-def get_timetable_today(d, number_week):
+def get_timetable_day(d, number_week):
     day = date(*d)
-    weekday = day.weekday()
+    weekday = day.weekday() if day.weekday() < 6 else 0
     timetable = [(i.time, i.subject, i.link) for i in Timetable.select() if
                  i.number_week == number_week and i.weekday == weekday]
     timetable_s = f"{weekdays[weekday]}\n"
     for t, s, l in timetable:
         timetable_s += f"{t.hour}:{'00' if str(t.minute) == '0' else t.minute} {s.name} {s.type_subject} {l}\n"
     return timetable_s
+
+
+def get_timetable_week(number_week):
+    timetable = [(i.weekday, i.time, i.subject, i.link) for i in Timetable.select() if
+                 i.number_week == number_week]
+    timetable_s = f"неделя {number_week}\n"
+    for wd, t, s, l in timetable:
+        timetable_s += f"{weekdays[wd]}\n{t.hour}:{'00' if str(t.minute) == '0' else t.minute} {s.name} {s.type_subject} {l}\n"
+    return timetable_s
+
+
+def get_phrase(name):
+    return Phrase[name].text
+
 
 def executable(function):
     with db_session:
@@ -204,7 +219,8 @@ def executable(function):
 
 # executable(create_default_db)
 with db_session:
-    print(get_timetable_today((2021, 3, 12), 2))
+    Phrase(name="timetable",
+           text=
 #     # create_default_db()
 #     # sbjt = "английский 2"
 #     # subject_type = PRAKTIKA

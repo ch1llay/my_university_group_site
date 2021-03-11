@@ -83,19 +83,23 @@ token = cfg.get('vk', 'token')
 vk = vk_api.VkApi(token=token).get_api()
 
 alternative_keyboard = VkKeyboard(inline=True)
-alternative_keyboard.add_callback_button("Расписание на сегодня", color=VkKeyboardColor.POSITIVE, payload='{"payload":"today"}')
+alternative_keyboard.add_callback_button("Расписание на сегодня", color=VkKeyboardColor.POSITIVE,
+                                         payload='{"payload":"today"}')
 alternative_keyboard.add_callback_line()
-alternative_keyboard.add_callback_button("Расписание на завтра", color=VkKeyboardColor.POSITIVE, payload='{"payload":"tomorrow"}')
+alternative_keyboard.add_callback_button("Расписание на завтра", color=VkKeyboardColor.POSITIVE,
+                                         payload='{"payload":"tomorrow"}')
 alternative_keyboard.add_callback_line()
-alternative_keyboard.add_callback_button("Расписание пар", color=VkKeyboardColor.POSITIVE, payload='{"payload":"timetable"}')
+alternative_keyboard.add_callback_button("Расписание пар", color=VkKeyboardColor.POSITIVE,
+                                         payload='{"payload":"timetable"}')
 alternative_keyboard.add_callback_line()
-alternative_keyboard.add_callback_button("ФИО преподавателей", color=VkKeyboardColor.POSITIVE, payload='{"payload":"prepody"}')
+alternative_keyboard.add_callback_button("ФИО преподавателей", color=VkKeyboardColor.POSITIVE,
+                                         payload='{"payload":"prepody"}')
 alternative_keyboard.add_callback_line()
 alternative_keyboard.add_callback_button("Выйти", payload={"payload": "mainmenu"})
-#alternative_keyboard.add_callback_openlink_button("Ссылка на диск", "https://yadi.sk/d/0W7wTf29wwaOYw")
+# alternative_keyboard.add_callback_openlink_button("Ссылка на диск", "https://yadi.sk/d/0W7wTf29wwaOYw")
 
 keyboard = VkKeyboard(one_time=False)
-keyboard.add_button("Альтернативное меню", color=VkKeyboardColor.SECONDARY, payload={"payload":"alternative_menu"})
+keyboard.add_button("Альтернативное меню", color=VkKeyboardColor.SECONDARY, payload={"payload": "alternative_menu"})
 keyboard.add_callback_button("Расписание на сегодня", color=VkKeyboardColor.POSITIVE,
                              payload='{"payload":"today"}')
 keyboard.add_line()
@@ -142,8 +146,6 @@ def reply_with_event(peer_id, event_id, user_id, text):
 
 def delete_last_message(peer_id_):
     message_id = vk.messages.getHistory(count=1, peer_id=peer_id_)["items"][0]["id"]
-    # reply(peer_id=peer_id_, message=str(message_id))
-    # [0]["response"]["items"][0]["id"]
     vk.messages.delete(message_ids=message_id, delete_for_all=True)
 
 
@@ -171,18 +173,15 @@ def processing_msg(command: str, data: dict, send_method=vk.messages.sendMessage
             user_id=user_id,
         )
     else:
-        print('normal--------------', data['object'])
-        print(type(send_method), type(vk.messages.sendMessageEventAnswer))
         message = data['object']["message"]
-        print(message)
         from_id = message["from_id"]
         peer_id = message['peer_id']
         basic_data_msg = dict(peer_id=peer_id, keyboard=keyboard.get_keyboard())
-        print(message)
         payload = message.get('payload')
         if payload:
             # Парсинг payload
             if type(payload) == str:
+                print("payload - str")
                 payload = [i.split(':') for i in payload.lstrip('{').rstrip('}').split(',')]
                 payload = {key.strip().strip('"').strip("'"): val.strip().strip('"').strip("'")
                            for [key, val] in payload}
@@ -190,6 +189,7 @@ def processing_msg(command: str, data: dict, send_method=vk.messages.sendMessage
                 payload = payload.get('payload')
                 print(payload)
             elif type(payload) == dict:
+                print("payload - dict")
                 payload = payload.get('payload')
         print(payload)
         command = payload or command.split()[0].lstrip('/')

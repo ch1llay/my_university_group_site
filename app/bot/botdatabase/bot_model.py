@@ -49,6 +49,10 @@ class Teacher(db.Entity):
     phone_number = Optional(str)
     vk_url = Optional(str)
 
+class Phrase(db.Entity):
+    name = PrimaryKey(str)
+    text = Optional(str)
+
 
 for name, ent in db.entities.items():
     ent.__bases__ = (tuple(list(ent.__bases__) + [AddArrtInDbClass])
