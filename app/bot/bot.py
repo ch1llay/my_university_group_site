@@ -94,7 +94,6 @@ class Bot:
                                            event_data=json.dumps(
                                                '{"type": "show_snackbar", "text": ' + text + ' }'))
 
-    @staticmethod
     # def delete_last_message(peer_id_):
     #     message_id = vk.messages.getHistory(count=1, peer_id=peer_id_)["items"][0]["id"]
     #     vk.messages.delete(message_ids=message_id, delete_for_all=True)
