@@ -112,7 +112,7 @@ class Bot:
             else:
                 text = message["text"]
                 command = text
-            base_msg = dict(peer_id=peer_id, random_id=random.randbytes(64), keyboard=Bot.keyboard)
+            base_msg = dict(peer_id=peer_id, keyboard=Bot.keyboard)
             commands = [
                 {"start": dict(msg_text_fnctn=lambda: get_phrase("start"))},
                 {"today": dict(msg_text_fnctn=lambda: get_timetable_day(datetime.today().date()))},
