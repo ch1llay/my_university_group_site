@@ -131,7 +131,7 @@ class Bot:
                         base_msg.update({"message": message})
                         base_msg.update(d)
 
-            Bot.reply(base_msg)
+            Bot.reply(**base_msg)
 
 
 app = Flask(__name__)
