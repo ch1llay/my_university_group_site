@@ -35,16 +35,16 @@ class Keyboards:
     menu = VkKeyboard(inline=True)
     menu.add_callback_button("Расписание на сегодня", color=VkKeyboardColor.POSITIVE,
                              payload='{"payload":"today"}')
-    menu.add_callback_line()
+    menu.add_line()
     menu.add_callback_button("Расписание на завтра", color=VkKeyboardColor.POSITIVE,
                              payload='{"payload":"tomorrow"}')
-    menu.add_callback_line()
+    menu.add_line()
     menu.add_callback_button("Расписание пар", color=VkKeyboardColor.POSITIVE,
                              payload='{"payload":"timetable"}')
-    menu.add_callback_line()
+    menu.add_line()
     menu.add_callback_button("ФИО преподавателей", color=VkKeyboardColor.POSITIVE,
                              payload='{"payload":"teachers"}')
-    menu.add_callback_line()
+    menu.add_line()
     menu.add_callback_button("Выйти", payload={"payload": "mainmenu"})
     # клавиатура для получения информации о преподавателях
     subjects_keyboard = VkKeyboard(inline=True)
