@@ -189,11 +189,16 @@ def get_home_task(subject, date_year_month_day_=None) -> list:
 
 @Subject.only_func
 def get_teachers(subject):
-    return [i.name for i in Subject[subject, subject_type].teachers]
+    return [i.name for i in subject.teachers]
 
 # number_week = 1 if day.isocalendar()[1] % 2 else 2
-def get_timetable_day(day, number_week):
+def get_timetable_day(day):
     weekday = day.weekday() if day.weekday() < 6 else 0
+    wk = day.isocalendar()[1]
+    if day.weekday() < 6:
+        number_week = 1 if wk % 2 else 2
+    else:
+        number_week = 2 if wk % 2 else 1
     timetable = [(i.time, i.subject, i.link) for i in Timetable.select() if
                  i.number_week == number_week and i.weekday == weekday]
     timetable_s = f"{weekdays[weekday]}\n"
