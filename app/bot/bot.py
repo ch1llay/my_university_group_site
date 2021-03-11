@@ -116,6 +116,7 @@ class Bot:
                 user_id = data["object"]["user_id"]
                 payload = data["object"]["payload"]
                 event_id = data["object"]["event_id"]
+                print(event_id, type(event_id))
                 Bot.reply_with_event(peer_id=peer_id, event_id=event_id, user_id=user_id, text="Всплывающее")
             if payload:
                 payload = payload["payload"]
