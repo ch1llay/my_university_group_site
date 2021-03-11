@@ -60,12 +60,15 @@ class Keyboards:
     subjects_keyboard.add_line()
     subjects_keyboard.add_callback_button("Назад", payload={"payload": "menu"})
 
+    @staticmethod
     def get_keyboard(self):
         return self.keyboard.get_keyboard()
 
+    @staticmethod
     def get_menu(self):
         return self.menu.get_keyboard()
 
+    @staticmethod
     def get_subjects_keyboard(self):
         return self.subjects_keyboard.get_keyboard()
 
