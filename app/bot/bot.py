@@ -103,7 +103,6 @@ class Bot:
         type_ = data["type"]
         print(type_)
         if type_ == 'confirmation':
-            print(cfg.get('vk', 'confirmation'))
             return cfg.get('vk', 'confirmation')
         elif type_ in ("message_new", "message_event"):
             if type_ == "message_new":
@@ -153,5 +152,7 @@ app = Flask(__name__)
 def bot():
     if request.data:
         data = json.loads(request.data)
-        Bot.msg_processing(data)
+        r = Bot.msg_processing(data)
+        if r != "ok":
+            return r
     return "ok"
