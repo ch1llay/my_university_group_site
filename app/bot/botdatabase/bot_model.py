@@ -52,6 +52,9 @@ class Teacher(db.Entity):
 class Phrase(db.Entity):
     name = PrimaryKey(str)
     text = Optional(str)
+class Admin(db.Entity):
+    name = PrimaryKey(str)
+    ids = Optional(Json)
 
 
 for name, ent in db.entities.items():
