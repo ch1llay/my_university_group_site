@@ -101,6 +101,8 @@ class Bot:
     @staticmethod
     def msg_processing(data):
         type_ = data["type"]
+        if type_ == 'confirmation':
+            return cfg.get('vk', 'confirmation')
         if type_ in ("message_new", "message_event"):
             if type_ == "message_new":
                 message = data["object"]["message"]
