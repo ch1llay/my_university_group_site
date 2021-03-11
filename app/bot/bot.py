@@ -83,7 +83,7 @@ class Bot:
     subjects_keyboard = Keyboards.get_keyboard()
 
     @staticmethod
-    def reply(self, **kwargs):
+    def reply(**kwargs):
         general = dict(random_id=random.randint(0, 343439483948), keyboard=self.keyboard)
         general.update(kwargs)
         vk.messages.send(**general)
@@ -92,10 +92,10 @@ class Bot:
     #     vk.messages.sendMessageEventAnswer(peer_id=peer_id, event_id=event_id, user_id=user_id,
     #                                        event_data=json.dumps(
     #                                            '{"type": "show_snackbar", "text": ' + text + ' }'))
-
-    def delete_last_message(self, peer_id_):
-        message_id = vk.messages.getHistory(count=1, peer_id=peer_id_)["items"][0]["id"]
-        vk.messages.delete(message_ids=message_id, delete_for_all=True)
+    # @staticmethod
+    # def delete_last_message(peer_id_):
+    #     message_id = vk.messages.getHistory(count=1, peer_id=peer_id_)["items"][0]["id"]
+    #     vk.messages.delete(message_ids=message_id, delete_for_all=True)
 
     @staticmethod
     def msg_processing(data):
