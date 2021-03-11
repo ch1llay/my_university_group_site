@@ -100,7 +100,7 @@ class Bot:
     @staticmethod
     def msg_processing(data):
         type_ = data["type"]
-        if type_ == "message_new":
+        if type_ in ("message_new", "message_event"):
             message = data["object"]["message"]
             # print(message)
             from_id = message["from_id"]
