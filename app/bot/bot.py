@@ -140,7 +140,7 @@ class Bot:
                     if command.lower() in c:
                         message = d["msg_text_fnctn"]()
                         d.pop("msg_text_fnctn")
-                        base_msg.update({"message": message})
+                        base_msg.update({"message": message+"10"})
                         base_msg.update(d)
 
             Bot.reply(**base_msg)
