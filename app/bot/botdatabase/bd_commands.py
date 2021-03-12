@@ -1,3 +1,9 @@
+if __name__ == '__main__':
+    from os.path import split as os_split
+    import sys
+
+    sys.path += [os_split(os_split(os_split(__file__)[0])[0])[0]]
+
 from itertools import chain
 
 from app.bot.botdatabase.bot_model import *
