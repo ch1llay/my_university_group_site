@@ -122,7 +122,7 @@ class Bot:
                 payload = payload["payload"]
                 command = payload
             else:
-                text = message["text"]
+                text = message["text"] # TODO: отлавливать обращение
                 command = text
             base_msg = dict(peer_id=peer_id, keyboard=Bot.keyboard)
             commands = [

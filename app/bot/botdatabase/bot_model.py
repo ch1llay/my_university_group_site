@@ -62,5 +62,14 @@ for name, ent in db.entities.items():
                      if AddArrtInDbClass not in list(ent.__bases__)
                      else tuple(list(ent.__bases__)))
 
+
+# def ddd(cls, key1, key2='пр.'):
+#     if type(cls) == type(Subject):
+#         print('----', key1, key2)
+#         cls.__getattribute__(key1, key2)
+#
+# setattr(Subject, "__getattribute__", classmethod(ddd))
+
+# Subject.__getattribute__()
 db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
 db.generate_mapping(create_tables=True)

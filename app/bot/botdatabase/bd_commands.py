@@ -2,6 +2,8 @@ from itertools import chain
 
 from app.bot.botdatabase.bot_model import *
 
+import datetime as dt
+
 PRAKTIKA = "пр."
 LEKCIA = "лк."
 
@@ -204,6 +206,7 @@ def get_timetable_day(day):
     timetable_s = f"{weekdays[weekday]}\n"
     for t, s, l in timetable:
         timetable_s += f"{t.hour}:{'00' if str(t.minute) == '0' else t.minute} {s.name} {s.type_subject} {l}\n"
+        print(timetable_s)
     return timetable_s
 
 def get_timetable_week():
@@ -228,8 +231,13 @@ def executable(function):
     with db_session:
         return function()
 
-    # executable(create_default_db)
-    # with db_session:
+
+
+# with db_session:
+    #create_default_db()
+    # print(Subject.__class_getitem__())
+    # print(get_timetable_day((datetime.today()+dt.timedelta(days=1)).date()))
+    # print(Subject["математика", PRAKTIKA])
     # # create_default_db()
     #     # sbjt = "английский 2"
     #     # subject_type = PRAKTIKA
