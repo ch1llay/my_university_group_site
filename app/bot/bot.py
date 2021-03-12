@@ -117,7 +117,7 @@ class Bot:
                 user_id = data["object"]["user_id"]
                 payload = data["object"]["payload"]
                 event_id = data["object"]["event_id"]
-                send_method = Bot.reply_with_event
+                # send_method = Bot.reply_with_event
                 print(event_id, type(event_id))
                 # Bot.reply_with_event(peer_id=peer_id, event_id=event_id, user_id=user_id, text="Всплывающее")
             if payload:
@@ -145,7 +145,7 @@ class Bot:
                         message = d["msg_text_fnctn"]()
                         print(message)
                         d.pop("msg_text_fnctn")
-                        base_msg.update({"message": message + "10"})
+                        base_msg.update({"message": message + " 148"})
                         base_msg.update(d)
 
             Bot.reply(**base_msg)
