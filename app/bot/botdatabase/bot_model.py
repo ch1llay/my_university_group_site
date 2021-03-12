@@ -57,14 +57,14 @@ class Rank(db.Entity):
     name = PrimaryKey(str)
     ids = Optional(Json)
 
+db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
+db.generate_mapping(create_tables=True)
 
 for name, ent in db.entities.items():
     ent.__bases__ = (tuple(list(ent.__bases__) + [AddArrtInDbClass])
                      if AddArrtInDbClass not in list(ent.__bases__)
                      else tuple(list(ent.__bases__)))
 
-db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
-db.generate_mapping(create_tables=True)
 # def ddd(cls, key1, key2='пр.'):
 #     if type(cls) == type(Subject):
 #         print('----', key1, key2)
