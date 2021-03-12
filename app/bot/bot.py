@@ -143,6 +143,7 @@ class Bot:
                 for c, d, in cmnds.items():
                     if command.lower() in c:
                         message = d["msg_text_fnctn"]()
+                        print(message)
                         d.pop("msg_text_fnctn")
                         base_msg.update({"message": message + "10"})
                         base_msg.update(d)
