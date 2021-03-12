@@ -134,14 +134,14 @@ class Bot:
                 command = text
             base_msg = dict(peer_id=peer_id, keyboard=Bot.keyboard)
             commands = [
-                {("start"): dict(msg_text_fnctn=lambda: get_phrase("start"))},
-                {("today"): dict(msg_text_fnctn=lambda: get_timetable_day(datetime.today().date()))},
-                {("tommorow"): dict(
+                {["start"]: dict(msg_text_fnctn=lambda: get_phrase("start"))},
+                {["today"]: dict(msg_text_fnctn=lambda: get_timetable_day(datetime.today().date()))},
+                {["tommorow"]: dict(
                     msg_text_fnctn=lambda: get_timetable_day((datetime.today() + dt.timedelta(days=1)).date()))},
-                {("week"): dict(msg_text_fnctn=lambda: get_timetable_week())},
-                {("timetable"): dict(msg_text_fnctn=lambda: get_phrase("timetable"))},
-                {("teachers"): dict(msg_text_fnctn=lambda: "Выберете предмет", keyboard=Bot.subjects_keyboard)},
-                {("menu", "меню"): dict(msg_text_fnctn=lambda: "Вы вернулись в главное меню", keyboard=Bot.menu)}
+                {["week"]: dict(msg_text_fnctn=lambda: get_timetable_week())},
+                {["timetable"]: dict(msg_text_fnctn=lambda: get_phrase("timetable"))},
+                {["teachers"]: dict(msg_text_fnctn=lambda: "Выберете предмет", keyboard=Bot.subjects_keyboard)},
+                {["menu", "меню"]: dict(msg_text_fnctn=lambda: "Вы вернулись в главное меню", keyboard=Bot.menu)}
             ]
             for cmnds in commands:
                 for c, d, in cmnds.items():
