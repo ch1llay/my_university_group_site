@@ -249,8 +249,6 @@ def executable(function):
     with db_session:
         return function()
 
-db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
-db.generate_mapping(create_tables=True)
 # create_default_db()
 
 # print(get_phrase("start"))
