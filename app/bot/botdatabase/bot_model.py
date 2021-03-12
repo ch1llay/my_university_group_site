@@ -71,5 +71,3 @@ for name, ent in db.entities.items():
 # setattr(Subject, "__getattribute__", classmethod(ddd))
 
 # Subject.__getattribute__()
-db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
-db.generate_mapping(create_tables=True)

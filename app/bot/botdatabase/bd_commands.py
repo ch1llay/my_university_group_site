@@ -8,7 +8,7 @@ PRAKTIKA = "пр."
 LEKCIA = "лк."
 
 
-# @db_session
+@db_session
 def create_default_db():
     subjects = [{"name": "математика"},
                 {"name": "математика", "type_subject": "лк."},
@@ -150,6 +150,8 @@ def create_default_db():
         dict(name="write_homework",
              ids="159526068,334465281,285983191,100774328,259258321,222458536,307097759,430256596,239105355,166287013,211900416,368974771,209567456")
     ]
+    [Admin(**i) for i in admins]
+    commit()
 
 weekdays = ["понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье"]
 
@@ -247,9 +249,11 @@ def executable(function):
     with db_session:
         return function()
 
+db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
+db.generate_mapping(create_tables=True)
 # create_default_db()
 
-print(get_phrase("start"))
+# print(get_phrase("start"))
 #get_timetable_day(datetime.today().date())
 # with db_session:
     #create_default_db()
