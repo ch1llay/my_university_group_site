@@ -227,7 +227,7 @@ def get_timetable_day(day):
 
 @db_session
 def get_timetable_week():
-    today = dt.today()
+    today = datetime.today()
     weekday = today.weekday()
     wk = today.isocalendar()[1]
     if weekday < 6:
@@ -249,7 +249,8 @@ def executable(function):
     with db_session:
         return function()
 
-# create_default_db()
+if __name__ == "__main__":
+    create_default_db()
 
 # print(get_phrase("start"))
 #get_timetable_day(datetime.today().date())

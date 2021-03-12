@@ -147,10 +147,14 @@ class Bot:
                 for c, d, in cmnds.items():
                     if command.lower() in c:
                         message = d["msg_text_fnctn"]()
+                        if len(message) < 15:
+                            message += "ничего)"
                         print(message)
                         d.pop("msg_text_fnctn")
-                        base_msg.update({"message": message + " 148"})
+                        base_msg.update({"message": message})
                         base_msg.update(d)
+                    else:
+                        print(command.lower(), c)
 
             Bot.reply(**base_msg)
         return "ok"
@@ -167,3 +171,8 @@ def bot():
         if r != "ok":
             return r
     return "ok"
+
+if __name__ == "__main__":
+    app.run(
+
+    )
