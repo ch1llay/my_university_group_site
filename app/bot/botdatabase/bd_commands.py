@@ -8,6 +8,7 @@ PRAKTIKA = "пр."
 LEKCIA = "лк."
 
 
+# @db_session
 def create_default_db():
     subjects = [{"name": "математика"},
                 {"name": "математика", "type_subject": "лк."},
@@ -152,26 +153,32 @@ def create_default_db():
 
 weekdays = ["понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье"]
 
+@db_session
 def add_subject(name, type_subject="пр."):
     Subject(name=name, type_subject=type_subject)
     commit()
 
 @Subject.only_func
+@db_session
 def add_home_task(subject, text, date_year_month_day_):
     Hometask(subject=subject, text=text, task_date=date(*date_year_month_day_))
     commit()
 
+@db_session
 def get_default_db():
     return list(chain(Subject.select()[:]))
 
 @Subject.only_func
+@db_session
 def delete_home_task_from_date(subject, date_year_month_day_):
     [i.delete() for i in subject.home_tasks.select() if lambda i: i.task_date == date(*date_year_month_day_)]
 
+@db_session
 def delete_home_task_date(date_year_month_day_):
     map(lambda i: i.delete(),
         Hometask.select(lambda i: i.task_date == date(*date_year_month_day_))[:])  # получить всю домашку
 
+@db_session
 def get_home_task(date_year_month_day_=None) -> list:
     task = []
     if not date_year_month_day_:
@@ -181,6 +188,7 @@ def get_home_task(date_year_month_day_=None) -> list:
     return task
 
 @Subject.only_func
+@db_session
 def get_home_task(subject, date_year_month_day_=None) -> list:
     task = []
     if not date_year_month_day_:
@@ -190,10 +198,12 @@ def get_home_task(subject, date_year_month_day_=None) -> list:
     return task
 
 @Subject.only_func
+@db_session
 def get_teachers(subject):
     return [i.name for i in subject.teachers]
 
 # number_week = 1 if day.isocalendar()[1] % 2 else 2
+@db_session
 def get_timetable_day(day):
     weekday = day.weekday() if day.weekday() < 6 else 0
     wk = day.isocalendar()[1]
@@ -211,6 +221,8 @@ def get_timetable_day(day):
         print(timetable_s)
     return timetable_s
 
+
+@db_session
 def get_timetable_week():
     today = datetime.today()
     weekday = today.weekday()
@@ -226,6 +238,7 @@ def get_timetable_week():
         timetable_s += f"{weekdays[wd]}\n{t.hour}:{'00' if str(t.minute) == '0' else t.minute} {s.name} {s.type_subject} {l}\n"
     return timetable_s
 
+@db_session
 def get_phrase(name):
     return Phrase[name].text
 
@@ -234,7 +247,7 @@ def executable(function):
         return function()
 
 
-
+#get_timetable_day(datetime.today().date())
 # with db_session:
     #create_default_db()
     # print(Subject.__class_getitem__())

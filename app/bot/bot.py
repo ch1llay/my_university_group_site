@@ -96,8 +96,7 @@ class Bot:
 
     # def delete_last_message(peer_id_):
     #     message_id = vk.messages.getHistory(count=1, peer_id=peer_id_)["items"][0]["id"]
-    #     vk.messages.delete(message_ids=message_id, delete_for_all=True)
-
+    #     vk.messages.delete(message_ids=message_id, delete_for_all=True
     @staticmethod
     def msg_processing(data):
         type_ = data["type"]
