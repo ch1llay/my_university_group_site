@@ -248,6 +248,8 @@ def executable(function):
         return function()
 
 # create_default_db()
+
+print(get_phrase("start"))
 #get_timetable_day(datetime.today().date())
 # with db_session:
     #create_default_db()
