@@ -64,7 +64,7 @@ for name, ent in db.entities.items():
                      else tuple(list(ent.__bases__)))
 
 db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
-db.generate_mapping(create_tables=True)
+db.generate_mapping()
 
 # def ddd(cls, key1, key2='пр.'):
 #     if type(cls) == type(Subject):
