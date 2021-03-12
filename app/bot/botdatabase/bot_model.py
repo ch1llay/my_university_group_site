@@ -12,6 +12,8 @@ from app.db.db_base_func import AddArrtInDbClass
 
 db = Database()
 
+pony.options.CUT_TRACEBACK = False
+
 
 class Timetable(db.Entity):
     id = PrimaryKey(int, auto=True)
