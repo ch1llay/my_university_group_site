@@ -227,7 +227,7 @@ def get_timetable_day(day):
 
 @db_session
 def get_timetable_week():
-    today = datetime.today()
+    today = dt.today()
     weekday = today.weekday()
     wk = today.isocalendar()[1]
     if weekday < 6:
