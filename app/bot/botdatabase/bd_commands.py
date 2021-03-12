@@ -84,7 +84,7 @@ def create_default_db():
          "link": r"https://us04web.zoom.us/j/74153390010?pwd=RXdZRUVRMWJUd29GczYwSDhJNC9YZz09",
          "weekday": 3},
 
-        {"number_week": 1, "subject": Subject["трир", PRAKTIKA], "time": time(8, 8), "link": "7а-108",
+        {"number_week": 1, "subject": Subject["трир", PRAKTIKA], "time": time(8, 0), "link": "7а-108",
          "weekday": 4},
         {"number_week": 1, "subject": Subject["английский 1", PRAKTIKA], "time": time(9, 50), "link": "8-807",
          "weekday": 4},
@@ -205,6 +205,7 @@ def get_teachers(subject):
 # number_week = 1 if day.isocalendar()[1] % 2 else 2
 @db_session
 def get_timetable_day(day):
+    print("day", day, type(day))
     weekday = day.weekday() if day.weekday() < 6 else 0
     wk = day.isocalendar()[1]
     if day.weekday() < 6:
@@ -214,10 +215,10 @@ def get_timetable_day(day):
     timetable = [(i.time, i.subject, i.link) for i in Timetable.select() if
                  i.number_week == number_week and i.weekday == weekday]
     timetable_s = f"{weekdays[weekday]}\n"
-    print(weekday, number_week)
+    print("weekday", weekday, "number_week", number_week)
     print(str(timetable))
     for t, s, l in timetable:
-        timetable_s += f"{t.hour}:{'00' if str(t.minute) == '0' else t.minute} {s.name} {s.type_subject} {l}\n"
+        timetable_s += f"{t.hour}:{'0'+str(t.minute) if str(t.minute) == '0' else t.minute} {s.name} {s.type_subject} {l}\n"
         print(timetable_s)
     return timetable_s
 
@@ -246,7 +247,7 @@ def executable(function):
     with db_session:
         return function()
 
-
+# create_default_db()
 #get_timetable_day(datetime.today().date())
 # with db_session:
     #create_default_db()

@@ -101,7 +101,7 @@ class Bot:
     @db_session
     def msg_processing(data):
         type_ = data["type"]
-        print(type_)
+        # print(type_)
         if type_ == 'confirmation':
             return cfg.get('vk', 'confirmation')
         elif type_ in ("message_new", "message_event"):
@@ -121,8 +121,9 @@ class Bot:
                                                    event_data=json.dumps(
                                                        '{"type": "show_snackbar", "text": "всплыающее"}'))
                 # send_method = Bot.reply_with_event
-                print(event_id, type(event_id))
+                print("event_id", event_id, type(event_id))
                 # Bot.reply_with_event(peer_id=peer_id, event_id=event_id, user_id=user_id, text="Всплывающее")
+            print("payload:", payload)
             if payload:
                 payload = payload["payload"]
                 command = payload
