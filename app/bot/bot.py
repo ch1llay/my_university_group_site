@@ -98,6 +98,7 @@ class Bot:
     #     message_id = vk.messages.getHistory(count=1, peer_id=peer_id_)["items"][0]["id"]
     #     vk.messages.delete(message_ids=message_id, delete_for_all=True
     @staticmethod
+    @db_session
     def msg_processing(data):
         type_ = data["type"]
         print(type_)
@@ -110,18 +111,22 @@ class Bot:
                 from_id = message["from_id"]
                 peer_id = message["peer_id"]
                 payload = message.get("payload")
+                send_method = Bot.reply
             elif "message_event":
                 peer_id = data["object"]["peer_id"]
                 user_id = data["object"]["user_id"]
                 payload = data["object"]["payload"]
                 event_id = data["object"]["event_id"]
+                send_method = Bot.reply_with_event
                 print(event_id, type(event_id))
                 # Bot.reply_with_event(peer_id=peer_id, event_id=event_id, user_id=user_id, text="Всплывающее")
             if payload:
                 payload = payload["payload"]
                 command = payload
             else:
-                text = message["text"] # TODO: отлавливать обращение
+                text = message["text"]  # TODO: отлавливать обращение
+                if "] " in text:
+                    text = text.split("] ")[1]
                 command = text
             base_msg = dict(peer_id=peer_id, keyboard=Bot.keyboard)
             commands = [
@@ -139,7 +144,7 @@ class Bot:
                     if command.lower() in c:
                         message = d["msg_text_fnctn"]()
                         d.pop("msg_text_fnctn")
-                        base_msg.update({"message": message+"10"})
+                        base_msg.update({"message": message + "10"})
                         base_msg.update(d)
 
             Bot.reply(**base_msg)
