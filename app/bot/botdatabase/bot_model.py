@@ -2,6 +2,8 @@
 
 """Документация к коду"""
 
+import os
+
 from datetime import date
 from datetime import time
 from datetime import datetime
@@ -59,7 +61,10 @@ class Rank(db.Entity):
     name = PrimaryKey(str)
     ids = Optional(Json)
 
-db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
+if not os.path.isfile("database.sqlite"):
+    db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
+else:
+    db.bind(provider='sqlite', filename='database.sqlite')
 db.generate_mapping(create_tables=True)
 
 for name, ent in db.entities.items():
