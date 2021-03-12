@@ -51,7 +51,7 @@ class Teacher(db.Entity):
     phone_number = Optional(str)
     vk_url = Optional(str)
 
-class Phrase(db.Entity):
+class Phrase_(db.Entity):
     name = PrimaryKey(str)
     text = Optional(str)
 
@@ -59,7 +59,7 @@ class Rank(db.Entity):
     name = PrimaryKey(str)
     ids = Optional(Json)
 
-db.bind(provider='sqlite', filename='database.sqlite')
+db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
 db.generate_mapping(create_tables=True)
 
 for name, ent in db.entities.items():

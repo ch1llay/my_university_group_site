@@ -143,7 +143,7 @@ def create_default_db():
              text="""1)8:00-9:35\n2)9:50-11:25\n3)11:40-13:15\n4)13:45-15:20\n5)15:35-17:10"""),
     ]
 
-    [Phrase(**i) for i in phrases]
+    [Phrase_(**i) for i in phrases]
     commit()
 
     admins = [
@@ -243,7 +243,7 @@ def get_timetable_week():
 
 @db_session
 def get_phrase(name):
-    return Phrase[name].text
+    return Phrase_[name].text
 
 def executable(function):
     with db_session:
