@@ -57,7 +57,7 @@ class Rank(db.Entity):
     name = PrimaryKey(str)
     ids = Optional(Json)
 
-db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
+db.bind(provider='sqlite', filename='database.sqlite')
 db.generate_mapping(create_tables=True)
 
 for name, ent in db.entities.items():
