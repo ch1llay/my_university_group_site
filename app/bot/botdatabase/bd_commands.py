@@ -204,6 +204,8 @@ def get_timetable_day(day):
     timetable = [(i.time, i.subject, i.link) for i in Timetable.select() if
                  i.number_week == number_week and i.weekday == weekday]
     timetable_s = f"{weekdays[weekday]}\n"
+    print(weekday, number_week)
+    print(str(timetable))
     for t, s, l in timetable:
         timetable_s += f"{t.hour}:{'00' if str(t.minute) == '0' else t.minute} {s.name} {s.type_subject} {l}\n"
         print(timetable_s)
