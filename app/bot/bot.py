@@ -148,6 +148,9 @@ class Bot:
                     if len(message) < 15:
                         message += "ничего)"
                     elif len(message) > 90:
+                        if send_method == Bot.reply_with_event:
+                            base_msg.update({"text": "Сообщение слишком велико для всплыващего сообщения"})
+                            Bot.reply_with_event(**base_msg)
                         send_method = Bot.reply
                     if send_method == Bot.reply:
                         if "user_id" in base_msg.keys():
