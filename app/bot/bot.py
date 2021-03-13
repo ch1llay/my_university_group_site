@@ -92,7 +92,7 @@ class Bot:
     def reply_with_event(peer_id, event_id, user_id, text):
         vk.messages.sendMessageEventAnswer(peer_id=peer_id, event_id=event_id, user_id=user_id,
                                            event_data=json.dumps(
-                                               '{"type": "show_snackbar", "text": ' + text + ' }'))
+                                               {"type": "show_snackbar", "text": ' + text + '}))
 
     # def delete_last_message(peer_id_):
     #     message_id = vk.messages.getHistory(count=1, peer_id=peer_id_)["items"][0]["id"]
@@ -111,18 +111,17 @@ class Bot:
                 from_id = message["from_id"]
                 peer_id = message["peer_id"]
                 payload = message.get("payload")
+                base_msg = dict(peer_id=peer_id, keyboard=Bot.keyboard)
                 send_method = Bot.reply
             elif "message_event":
                 peer_id = data["object"]["peer_id"]
                 user_id = data["object"]["user_id"]
                 payload = data["object"]["payload"]
                 event_id = data["object"]["event_id"]
-                vk.messages.sendMessageEventAnswer(peer_id=peer_id, event_id=event_id, user_id=user_id,
-                                                   event_data=json.dumps(
-                                                       {"type": "show_snackbar", "text": "всплыающее"}))
+                Bot.reply_with_event(peer_id, event_id, user_id, )
                 # send_method = Bot.reply_with_event
-                print("event_id", event_id, type(event_id))
-                # Bot.reply_with_event(peer_id=peer_id, event_id=event_id, user_id=user_id, text="Всплывающее")
+                base_msg = dict(peer_id=peer_id, event_id=event_id, user_id=user_id)
+                send_method = Bot.reply_with_event
             print("payload:", payload)
             if payload:
                 payload = payload["payload"]
@@ -132,7 +131,6 @@ class Bot:
                 if "] " in text:
                     text = text.split("] ")[1]
                 command = text
-            base_msg = dict(peer_id=peer_id, keyboard=Bot.keyboard)
             commands = [
                 {("start",): dict(msg_text_fnctn=lambda: get_phrase("start"))},
                 {("today",): dict(msg_text_fnctn=lambda: get_timetable_day(datetime.today().date()))},
@@ -149,9 +147,13 @@ class Bot:
                         message = d["msg_text_fnctn"]()
                         if len(message) < 15:
                             message += "ничего)"
-                        print(message)
+                        elif len(message) > 90:
+                            send_method = Bot.reply
                         d.pop("msg_text_fnctn")
-                        base_msg.update({"message": message})
+                        if type(send_method) == type(Bot.reply):
+                            base_msg.update({"message": message})
+                        elif type(send_method) == type(Bot.reply_with_event):
+                            base_msg.update({"text": message})
                         base_msg.update(d)
                     else:
                         print(command.lower(), c)
