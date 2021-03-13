@@ -45,14 +45,14 @@ q_event = """
     "object": {
         "user_id": 159526068,
         "peer_id": 2000000001,
-        "event_id": "1263a33e9e57",
+        "event_id": "3e9602618746",
         "payload": {
-            "payload": "tomorrow"
+            "payload": "week"
         },
-        "conversation_message_id": 101
+        "conversation_message_id": 118
     },
     "group_id": 203076503,
-    "event_id": "306c975e88e1be5d3086e755d800ad29dc98aa01"
+    "event_id": "282a34e445e8694cc43006cb5873e1602b717a32"
 }
 """
 url = "http://127.0.0.1:5000/"
