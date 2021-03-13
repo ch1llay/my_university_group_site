@@ -112,26 +112,23 @@ class Bot:
                 # print(message)
                 from_id = message["from_id"]
                 peer_id = message["peer_id"]
-                payload = message.get("payload")
                 base_msg = dict(peer_id=peer_id, keyboard=Bot.keyboard)
-                send_method = Bot.reply
-            elif "message_event":
-                peer_id = data["object"]["peer_id"]
-                user_id = data["object"]["user_id"]
-                payload = data["object"]["payload"]
-                event_id = data["object"]["event_id"]
-                base_msg = dict(peer_id=peer_id, event_id=event_id, user_id=user_id)
-                send_method = Bot.reply_with_event
-            print("payload:", payload)
-            if payload:
-                payload = payload["payload"]
-                command = payload
-            else:
+                print("message_new")
                 text = message["text"]  # TODO: отлавливать обращение
                 if "] " in text:
                     text = text.split("] ")[1]
                 command = text
-                print(command)
+                send_method = Bot.reply
+            elif type_ == "message_event":
+                peer_id = data["object"]["peer_id"]
+                user_id = data["object"]["user_id"]
+                payload = data["object"]["payload"]
+                if payload:
+                    payload = payload["payload"]
+                    command = payload
+                event_id = data["object"]["event_id"]
+                base_msg = dict(peer_id=peer_id, event_id=event_id, user_id=user_id)
+                send_method = Bot.reply_with_event
             commands = [
                 {("start",): dict(msg_text_fnctn=lambda: get_phrase("start"))},
                 {("today",): dict(msg_text_fnctn=lambda: get_timetable_day(datetime.today().date()))},
@@ -146,18 +143,17 @@ class Bot:
                 for c, d, in cmnds.items():
                     if command.lower() in c[0]:
                         message = d["msg_text_fnctn"]()
+                        d.pop("msg_text_fnctn")
+                        print(send_method, Bot.reply, Bot.reply_with_event)
+                        if send_method == Bot.reply:
+                            base_msg.update({"message": message})
+                        elif send_method == Bot.reply_with_event:
+                            base_msg.update({"text": message})
                         print(message, len(message))
                         if len(message) < 15:
                             message += "ничего)"
                         elif len(message) > 90:
                             send_method = Bot.reply
-                        d.pop("msg_text_fnctn")
-                        print(send_method, Bot.reply, Bot.reply_with_event)
-                        if send_method == Bot.reply:
-                            base_msg.pop("user_id")
-                            base_msg.update({"message": message})
-                        elif send_method == Bot.reply_with_event:
-                            base_msg.update({"text": message})
                         base_msg.update(d)
                     else:
                         print(command.lower(), c)
