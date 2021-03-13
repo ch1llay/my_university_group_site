@@ -94,7 +94,7 @@ class Bot:
     def reply_with_event(peer_id, event_id, user_id, text):
         vk.messages.sendMessageEventAnswer(peer_id=peer_id, event_id=event_id, user_id=user_id,
                                            event_data=json.dumps(
-                                               {"type": "show_snackbar", "text": ' + text + '}))
+                                               {"type": "show_snackbar", "text": text}))
 
     # def delete_last_message(peer_id_):
     #     message_id = vk.messages.getHistory(count=1, peer_id=peer_id_)["items"][0]["id"]
