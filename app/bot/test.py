@@ -45,16 +45,16 @@ q_event = """
     "object": {
         "user_id": 159526068,
         "peer_id": 2000000001,
-        "event_id": "3e9602618746",
+        "event_id": "1776a756b921",
         "payload": {
             "payload": "week"
         },
-        "conversation_message_id": 118
+        "conversation_message_id": 130
     },
     "group_id": 203076503,
-    "event_id": "282a34e445e8694cc43006cb5873e1602b717a32"
+    "event_id": "9f5a072b366f9529355236c6704e2465c9da9903"
 }
 """
 url = "http://127.0.0.1:5000/"
-r = requests.post(url, data=q)
+r = requests.post(url, data=q_event)
 print(r.text)

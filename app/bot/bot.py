@@ -151,6 +151,8 @@ class Bot:
                         elif len(message) > 90:
                             send_method = Bot.reply
                         if send_method == Bot.reply:
+                            if "text" in base_msg.keys():
+                                base_msg.pop("text")
                             base_msg.update({"message": message})
                         elif send_method == Bot.reply_with_event:
                             base_msg.update({"text": message})
