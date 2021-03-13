@@ -103,64 +103,63 @@ class Bot:
     @db_session
     def msg_processing(data):
         type_ = data["type"]
-        # print(type_)
         if type_ == 'confirmation':
             return cfg.get('vk', 'confirmation')
-        elif type_ in ("message_new", "message_event"):
-            if type_ == "message_new":
-                message = data["object"]["message"]
-                # print(message)
-                from_id = message["from_id"]
-                peer_id = message["peer_id"]
-                base_msg = dict(peer_id=peer_id, keyboard=Bot.keyboard)
-                print("message_new")
-                text = message["text"]  # TODO: отлавливать обращение
-                if "] " in text:
-                    text = text.split("] ")[1]
-                command = text
-                send_method = Bot.reply
-            elif type_ == "message_event":
-                peer_id = data["object"]["peer_id"]
-                user_id = data["object"]["user_id"]
-                payload = data["object"]["payload"]
-                if payload:
-                    payload = payload["payload"]
-                    command = payload
-                event_id = data["object"]["event_id"]
-                base_msg = dict(peer_id=peer_id, event_id=event_id, user_id=user_id)
-                send_method = Bot.reply_with_event
-            commands = [
-                {("start",): dict(msg_text_fnctn=lambda: get_phrase("start"))},
-                {("today",): dict(msg_text_fnctn=lambda: get_timetable_day(datetime.today().date()))},
-                {("tomorrow",): dict(
-                    msg_text_fnctn=lambda: get_timetable_day((datetime.today() + dt.timedelta(days=1)).date()))},
-                {("week",): dict(msg_text_fnctn=lambda: get_timetable_week())},
-                {("timetable",): dict(msg_text_fnctn=lambda: get_phrase("timetable"))},
-                {("teachers",): dict(msg_text_fnctn=lambda: "Выберете предмет", keyboard=Bot.subjects_keyboard)},
-                {("menu", "меню"): dict(msg_text_fnctn=lambda: "Вы вернулись в главное меню", keyboard=Bot.menu)}
-            ]
-            for cmnds in commands:
-                for c, d, in cmnds.items():
-                    if command.lower() in c[0]:
-                        message = d["msg_text_fnctn"]()
-                        d.pop("msg_text_fnctn")
-                        print(send_method, Bot.reply, Bot.reply_with_event)
-                        print(message, len(message))
-                        if len(message) < 15:
-                            message += "ничего)"
-                        elif len(message) > 90:
-                            send_method = Bot.reply
-                        if send_method == Bot.reply:
-                            if "user_id" in base_msg.keys():
-                                base_msg.pop("user_id")
-                            base_msg.update({"message": message})
-                        elif send_method == Bot.reply_with_event:
-                            base_msg.update({"text": message})
-                        base_msg.update(d)
-                    else:
-                        print(command.lower(), c)
-            print(base_msg, send_method)
-            send_method(**base_msg)
+        elif type_ == "message_new":
+            message = data["object"]["message"]
+            from_id = message["from_id"]
+            peer_id = message["peer_id"]
+            base_msg = dict(peer_id=peer_id, keyboard=Bot.keyboard)
+            print("message_new")
+            text = message["text"]  # TODO: отлавливать обращение
+            if "] " in text:
+                text = text.split("] ")[1]
+                print(text)
+            command = text
+            send_method = Bot.reply
+        elif type_ == "message_event":
+            peer_id = data["object"]["peer_id"]
+            user_id = data["object"]["user_id"]
+            payload = data["object"]["payload"]
+            if payload:
+                payload = payload["payload"]
+                command = payload
+            event_id = data["object"]["event_id"]
+            base_msg = dict(peer_id=peer_id, event_id=event_id, user_id=user_id)
+            send_method = Bot.reply_with_event
+        commands = [
+            {("start",): dict(msg_text_fnctn=lambda: get_phrase("start"))},
+            {("today",): dict(msg_text_fnctn=lambda: get_timetable_day(datetime.today().date()))},
+            {("tomorrow",): dict(
+                msg_text_fnctn=lambda: get_timetable_day((datetime.today() + dt.timedelta(days=1)).date()))},
+            {("week",): dict(msg_text_fnctn=lambda: get_timetable_week())},
+            {("timetable",): dict(msg_text_fnctn=lambda: get_phrase("timetable"))},
+            {("teachers",): dict(msg_text_fnctn=lambda: "Выберете предмет", keyboard=Bot.subjects_keyboard)},
+            {("menu", "меню"): dict(msg_text_fnctn=lambda: "Вы вернулись в главное меню", keyboard=Bot.menu)}
+        ]
+        for cmnds in commands:
+            for c, d, in cmnds.items():
+                print([command])
+                if command.lower() in c:
+                    message = d["msg_text_fnctn"]()
+                    d.pop("msg_text_fnctn")
+                    print(send_method, Bot.reply, Bot.reply_with_event)
+                    print(message, len(message))
+                    if len(message) < 15:
+                        message += "ничего)"
+                    elif len(message) > 90:
+                        send_method = Bot.reply
+                    if send_method == Bot.reply:
+                        if "user_id" in base_msg.keys():
+                            base_msg.pop("user_id")
+                        base_msg.update({"message": message})
+                    elif send_method == Bot.reply_with_event:
+                        base_msg.update({"text": message})
+                    base_msg.update(d)
+                else:
+                    print(command.lower(), c)
+        print(base_msg, send_method)
+        send_method(**base_msg)
         return "ok"
 
 
