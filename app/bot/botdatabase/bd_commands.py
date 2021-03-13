@@ -46,12 +46,14 @@ def create_default_db():
     commit()
     teachers = [
         dict(name="Купряшина Лилия Александовна", subjects=Subject.select(lambda i: i.name == "математика")[:]),
+        dict(name="Данилова Валерия Александровна", subjects=Subject.select(lambda i: i.name == "правоведение")[:]),
+        dict(name="Казакова Ирина Анатольевна", subjects=Subject.select(lambda i: i.name == "млита")[:]),
         dict(name="Костина Наталья Владимировна",
              subjects=[Subject["физика", PRAKTIKA]]),
         dict(name="Суровицкая Галина Владимировна",
              subjects=[Subject["физика", LEKCIA]]),
         dict(name="Гурьянов Лев Вячеславович", subjects=Subject.select(lambda i: i.name == "программирование")[:]),
-        dict(name="Такташкин Денис Витальевич", subjects=Subject.select(lambda i: i.name == "трир")[:]),
+        dict(name="Такташкин Денис Витальевич", subjects=Subject.select(lambda i: i.name == "трир" or i.name == "кураторский час")[:]),
         dict(name="Голобокова Елена Михайловна",
              subjects=[Subject["итвпд", PRAKTIKA]]),
         dict(name="Данкова Наталья Владамировна",
@@ -167,7 +169,7 @@ def add_subject(name, type_subject="пр."):
     commit()
 
 
-@Subject.only_func
+# @Subject.only_func
 @db_session
 def add_home_task(subject, text, date_year_month_day_):
     Hometask(subject=subject, text=text, task_date=date(*date_year_month_day_))
@@ -179,7 +181,7 @@ def get_default_db():
     return list(chain(Subject.select()[:]))
 
 
-@Subject.only_func
+# @Subject.only_func
 @db_session
 def delete_home_task_from_date(subject, date_year_month_day_):
     [i.delete() for i in subject.home_tasks.select() if lambda i: i.task_date == date(*date_year_month_day_)]
@@ -201,7 +203,7 @@ def get_home_task(date_year_month_day_=None) -> list:
     return task
 
 
-@Subject.only_func
+# @Subject.only_func
 @db_session
 def get_home_task(subject, date_year_month_day_=None) -> list:
     task = []
@@ -212,10 +214,20 @@ def get_home_task(subject, date_year_month_day_=None) -> list:
     return task
 
 
-@Subject.only_func
 @db_session
 def get_teachers(subject):
-    return [i.name for i in subject.teachers]
+    subjects = [i for i in Subject.select() if i.name == subject]
+    # print(subjects)
+    teachers_s = subject
+    for i in subjects:
+        if i.type_subject == PRAKTIKA:
+            teachers_s += f"\nпрактика {list(i.teachers)[0].name}\n"
+        elif i.type_subject == LEKCIA:
+            teachers_s += f"лекция {list(i.teachers)[0].name}\n"
+        else:
+            teachers_s += f"{list(i.teachers)[0].name}\n"
+    return teachers_s
+
 
 
 # number_week = 1 if day.isocalendar()[1] % 2 else 2
@@ -276,7 +288,7 @@ def executable(function):
 
 if __name__ == "__main__":
     create_default_db()
-    print(get_phrase("start"))
+    print(get_teachers("млита"))
 # get_timetable_day(datetime.today().date())
 # with db_session:
 # create_default_db()

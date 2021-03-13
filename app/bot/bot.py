@@ -61,15 +61,15 @@ class Keyboards:
     def get_subjects_keyboard():
         # клавиатура для получения информации о преподавателях
         subjects_keyboard = VkKeyboard(inline=True)
-        subjects_keyboard.add_callback_button("Английский", payload={"payload": "english"})
-        subjects_keyboard.add_callback_button("ИТвПД", payload={"payload": "itvpd"})
-        subjects_keyboard.add_callback_button("Математика", payload={"payload": "math"})
-        subjects_keyboard.add_callback_button("МЛиТА", payload={"payload": "mlita"})
+        subjects_keyboard.add_callback_button("Английский", payload={"payload": "_english_"})
+        subjects_keyboard.add_callback_button("ИТвПД", payload={"payload": "_itvpd_"})
+        subjects_keyboard.add_callback_button("Математика", payload={"payload": "_math_"})
+        subjects_keyboard.add_callback_button("МЛиТА", payload={"payload": "_mlita_"})
         subjects_keyboard.add_line()
-        subjects_keyboard.add_callback_button("Правоведение", payload={"payload": "pravo"})
-        subjects_keyboard.add_callback_button("Программирование", payload={"payload": "proga"})
-        subjects_keyboard.add_callback_button("ТРИР", payload={"payload": "trir"})
-        subjects_keyboard.add_callback_button("Физика", payload={"payload": "phisic"})
+        subjects_keyboard.add_callback_button("Правоведение", payload={"payload": "_pravo_"})
+        subjects_keyboard.add_callback_button("Программирование", payload={"payload": "_proga_"})
+        subjects_keyboard.add_callback_button("ТРИР", payload={"payload": "_trir_"})
+        subjects_keyboard.add_callback_button("Физика", payload={"payload": "_phisic_"})
         subjects_keyboard.add_line()
         subjects_keyboard.add_callback_button("Назад", payload={"payload": "menu"})
         return subjects_keyboard.get_keyboard()
@@ -82,7 +82,7 @@ vk = vk_api.VkApi(token=token).get_api()
 class Bot:
     keyboard = Keyboards.get_keyboard()
     menu = Keyboards.get_menu()
-    subjects_keyboard = Keyboards.get_keyboard()
+    subjects_keyboard = Keyboards.get_subjects_keyboard()
 
     @staticmethod
     def reply(**kwargs):
@@ -135,32 +135,41 @@ class Bot:
             {("week",): dict(msg_text_fnctn=lambda: get_timetable_week())},
             {("timetable",): dict(msg_text_fnctn=lambda: get_phrase("timetable"))},
             {("teachers",): dict(msg_text_fnctn=lambda: "Выберете предмет", keyboard=Bot.subjects_keyboard)},
-            {("menu", "меню"): dict(msg_text_fnctn=lambda: "Вы вернулись в главное меню", keyboard=Bot.menu)}
+            {("menu", "меню"): dict(msg_text_fnctn=lambda: "Вы вернулись в главное меню", keyboard=Bot.menu)},
+            {("_english_"): dict(msg_text_fnctn=lambda: get_teachers("английский"))},
+            {("_itvpd_"): dict(msg_text_fnctn=lambda: get_teachers("ИТвПД"))},
+            {("_math_"): dict(msg_text_fnctn=lambda: get_teachers("математика"))},
+            {("_mlita_"): dict(msg_text_fnctn=lambda: get_teachers("млита"))},
+            {("_pravo_"): dict(msg_text_fnctn=lambda: get_teachers("правоведение"))},
+            {("_proga_"): dict(msg_text_fnctn=lambda: get_teachers("программирование"))},
+            {("_trir_"): dict(msg_text_fnctn=lambda: get_teachers("трир"))},
+            {("phisic_"): dict(msg_text_fnctn=lambda: get_teachers("английский"))},
         ]
         for cmnds in commands:
             for c, d, in cmnds.items():
-                print([command])
                 if command.lower() in c:
                     message = d["msg_text_fnctn"]()
                     d.pop("msg_text_fnctn")
-                    print(send_method, Bot.reply, Bot.reply_with_event)
-                    print(message, len(message))
                     if len(message) < 15:
                         message += "ничего)"
-                    elif len(message) > 90:
+                    elif len(message) > 90 or "keyboard" in d.keys():
                         if send_method == Bot.reply_with_event:
-                            base_msg.update({"text": "Сообщение слишком велико для всплыващего сообщения"})
-                            Bot.reply_with_event(**base_msg)
+                            print(event_id)
+                            Bot.reply_with_event(peer_id=peer_id, user_id=user_id, event_id=event_id,
+                                                 text="Сообщение слишком велико для всплывающего уведомления.\nОтправляю обычное сообщение")
                         send_method = Bot.reply
+                    print(base_msg)
                     if send_method == Bot.reply:
+                        base_msg.update({"message": message})
                         if "user_id" in base_msg.keys():
                             base_msg.pop("user_id")
-                        base_msg.update({"message": message})
+                            base_msg.pop("event_id")
                     elif send_method == Bot.reply_with_event:
                         base_msg.update({"text": message})
                     base_msg.update(d)
+                    break
                 else:
-                    print(command.lower(), c)
+                    pass
         print(base_msg, send_method)
         send_method(**base_msg)
         return "ok"

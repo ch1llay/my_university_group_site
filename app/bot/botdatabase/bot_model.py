@@ -132,10 +132,10 @@ def connect_with_db(db_path="", deep=0, db_l=db):
 # connect_with_db(db_path="database.sqlite", db_l=db)
 db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
 db.generate_mapping(create_tables=True)
-for name, ent in db.entities.items():
-    ent.__bases__ = (tuple(list(ent.__bases__) + [AddArrtInDbClass])
-                     if AddArrtInDbClass not in list(ent.__bases__)
-                     else tuple(list(ent.__bases__)))
+# for name, ent in db.entities.items():
+#     ent.__bases__ = (tuple(list(ent.__bases__) + [AddArrtInDbClass])
+#                      if AddArrtInDbClass not in list(ent.__bases__)
+#                      else tuple(list(ent.__bases__)))
 
 # def ddd(cls, key1, key2='пр.'):
 #     if type(cls) == type(Subject):
