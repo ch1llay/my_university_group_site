@@ -14,7 +14,7 @@ PRAKTIKA = "пр."
 LEKCIA = "лк."
 
 
-# @db_session
+@db_session
 def create_default_db():
     subjects = [{"name": "математика"},
                 {"name": "математика", "type_subject": "лк."},
@@ -149,7 +149,7 @@ def create_default_db():
              text="""1)8:00-9:35\n2)9:50-11:25\n3)11:40-13:15\n4)13:45-15:20\n5)15:35-17:10"""),
     ]
 
-    [Phrase(**i) for i in phrases]
+    [Phrase_(**i) for i in phrases]
     commit()
 
     admins = [
@@ -275,8 +275,8 @@ def executable(function):
 
 
 if __name__ == "__main__":
-    # create_default_db()
-    print(get_timetable_week())
+    create_default_db()
+    print(get_phrase("start"))
 # get_timetable_day(datetime.today().date())
 # with db_session:
 # create_default_db()
