@@ -145,15 +145,15 @@ class Bot:
                         message = d["msg_text_fnctn"]()
                         d.pop("msg_text_fnctn")
                         print(send_method, Bot.reply, Bot.reply_with_event)
-                        if send_method == Bot.reply:
-                            base_msg.update({"message": message})
-                        elif send_method == Bot.reply_with_event:
-                            base_msg.update({"text": message})
                         print(message, len(message))
                         if len(message) < 15:
                             message += "ничего)"
                         elif len(message) > 90:
                             send_method = Bot.reply
+                        if send_method == Bot.reply:
+                            base_msg.update({"message": message})
+                        elif send_method == Bot.reply_with_event:
+                            base_msg.update({"text": message})
                         base_msg.update(d)
                     else:
                         print(command.lower(), c)
