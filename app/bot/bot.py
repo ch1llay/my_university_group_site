@@ -39,6 +39,8 @@ class Keyboards:
     def get_menu():
         # inline клавиатура для браузера
         menu = VkKeyboard(inline=True)
+        menu.add_callback_button("Расписание на неделю", color=VkKeyboardColor.POSITIVE,
+                                 payload='{"payload":"week"}')
         menu.add_callback_button("Расписание на сегодня", color=VkKeyboardColor.POSITIVE,
                                  payload='{"payload":"today"}')
         menu.add_line()
@@ -129,10 +131,11 @@ class Bot:
                 if "] " in text:
                     text = text.split("] ")[1]
                 command = text
+                print(command)
             commands = [
                 {("start",): dict(msg_text_fnctn=lambda: get_phrase("start"))},
                 {("today",): dict(msg_text_fnctn=lambda: get_timetable_day(datetime.today().date()))},
-                {("tommorow",): dict(
+                {("tomorrow",): dict(
                     msg_text_fnctn=lambda: get_timetable_day((datetime.today() + dt.timedelta(days=1)).date()))},
                 {("week",): dict(msg_text_fnctn=lambda: get_timetable_week())},
                 {("timetable",): dict(msg_text_fnctn=lambda: get_phrase("timetable"))},
@@ -143,20 +146,23 @@ class Bot:
                 for c, d, in cmnds.items():
                     if command.lower() in c[0]:
                         message = d["msg_text_fnctn"]()
+                        print(message, len(message))
                         if len(message) < 15:
                             message += "ничего)"
                         elif len(message) > 90:
                             send_method = Bot.reply
                         d.pop("msg_text_fnctn")
-                        if type(send_method) == type(Bot.reply):
+                        print(send_method, Bot.reply, Bot.reply_with_event)
+                        if send_method == Bot.reply:
+                            base_msg.pop("user_id")
                             base_msg.update({"message": message})
-                        elif type(send_method) == type(Bot.reply_with_event):
+                        elif send_method == Bot.reply_with_event:
                             base_msg.update({"text": message})
                         base_msg.update(d)
                     else:
                         print(command.lower(), c)
-
-            Bot.reply(**base_msg)
+            print(base_msg, send_method)
+            send_method(**base_msg)
         return "ok"
 
 
